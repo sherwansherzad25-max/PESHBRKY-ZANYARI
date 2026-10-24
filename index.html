@@ -71,7 +71,6 @@ button,input,select{font-family:inherit}
 .step p{margin:.1rem 0 0;font-size:.64rem;color:#a5b4fc}
 .giftbox{width:100%;padding:.55rem .7rem;border-radius:1rem;text-align:center;border:1px solid rgba(251,191,36,.4);background:rgba(251,191,36,.07);font-size:.7rem;font-weight:700;color:#fef3c7;line-height:1.8}
 .giftbox i{color:var(--gold);margin-left:.35rem}
-#db-status{font-size:0.75rem;font-weight:bold;color:#fca5a5;animation:blink 1.5s infinite;}
 
 /* ============ Countdown ============ */
 .cd-title{font-size:2rem;font-weight:900;margin:0;text-align:center;line-height:1.3;filter:drop-shadow(0 0 .8rem rgba(34,211,238,.45))}
@@ -154,16 +153,17 @@ button,input,select{font-family:inherit}
 .xc .v{font-size:.5rem;color:rgb(var(--rgb));font-weight:800}
 .xc .av{width:1rem;height:1rem;font-size:.5rem}
 
-/* ============ Board (Top 20) ============ */
+/* ============ Board (Top/All) ============ */
 .board{flex:1 1 0;min-height:0;border-radius:1.05rem .85rem .85rem .85rem;display:flex;flex-direction:column;padding:.4rem .4rem .35rem;
   background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.025));border:1px solid var(--line)}
 .bhead{display:flex;justify-content:space-between;align-items:center;font-size:.66rem;font-weight:900;margin-bottom:.25rem;height:1rem;flex-shrink:0}
 .bhead .t i{color:var(--gold);margin-inline-end:.3rem}
 .bhead .lv{font-size:.52rem;color:#fca5a5;display:flex;align-items:center;gap:.25rem;font-weight:700}
 .bhead .lv i{width:.34rem;height:.34rem;border-radius:50%;background:#ef4444;animation:blink 1.2s infinite}
-.bcols{flex:1;min-height:0;display:flex;gap:.35rem}
-.bcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:.12rem}
-.brow{flex:1 1 0;min-height:0;max-height:1.9rem;display:flex;align-items:center;gap:.3rem;padding:0 .3rem;border-radius:.5rem;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.06);font-size:.62rem}
+.bcols{flex:1;min-height:0;display:flex;gap:.35rem;overflow-y:auto;overflow-x:hidden;padding-right:2px}
+.bcols::-webkit-scrollbar { display: none; }
+.bcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:.12rem;height:max-content}
+.brow{flex:0 0 auto;min-height:1.75rem;max-height:1.9rem;display:flex;align-items:center;gap:.3rem;padding:0 .3rem;border-radius:.5rem;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.06);font-size:.62rem}
 .brow .rk{width:1.05rem;height:1.05rem;flex-shrink:0;border-radius:.32rem;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.58rem;background:rgba(124,58,237,.38);color:#ddd6fe}
 .brow.r1 .rk{background:linear-gradient(135deg,#fde68a,#f59e0b);color:#451a03}
 .brow.r2 .rk{background:linear-gradient(135deg,#f1f5f9,#94a3b8);color:#0f172a}
@@ -172,9 +172,9 @@ button,input,select{font-family:inherit}
 .brow.r2{background:linear-gradient(90deg,rgba(203,213,225,.17),rgba(203,213,225,.04));border-color:rgba(203,213,225,.4)}
 .brow.r3{background:linear-gradient(90deg,rgba(251,146,60,.2),rgba(251,146,60,.04));border-color:rgba(251,146,60,.45)}
 .brow .av{width:1.05rem;height:1.05rem;font-size:.5rem}
-.brow .nm{flex:1;min-width:0;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e2e8f0}
+.brow .nm{flex:1;min-width:0;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e2e8f0;display:flex;align-items:center}
 .brow .bd{display:flex;gap:.18rem;align-items:center;font-size:.5rem}
-.brow .fire{color:#fb923c;font-weight:900}.brow .gem{color:var(--cy)}.brow .up{color:#34d399}.brow .dn{color:#fb7185}
+.brow .fire{color:#fb923c;font-weight:900}.brow .up{color:#34d399}.brow .dn{color:#fb7185}
 .brow .sc{font-weight:900;font-size:.62rem;color:#6ee7b7;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.32);padding:0 .32rem;border-radius:.38rem;line-height:1.02rem;white-space:nowrap}
 .brow.ghost{opacity:.32}
 .brow.ghost .rk{background:rgba(255,255,255,.08);color:#94a3b8}
@@ -271,9 +271,7 @@ body.demo #demo-badge{display:block}
       <h1 class="big-title gt">پێشبڕکێی زانیاری!</h1>
       <p class="sub">بەشداربە و ببە بە پاڵەوانی ئەم خولە</p>
       
-      <div id="db-status">خەریکی هێنانی پرسیارەکانە لە داتابەیس... ⏳</div>
-
-      <div class="step clickable" id="step1" style="--rgb:34,211,238"><div class="num">١</div><div><h3>پرسیارەکە ببینە</h3><p>پرسیار و ٤ بژاردە لەسەر شاشەکە دەردەکەون</p></div></div>
+      <div class="step clickable" id="step1" style="--rgb:34,211,238"><div class="num">١</div><div><h3>دەستپێکی یاری</h3><p>پرسیار و ٤ بژاردە لەسەر شاشەکە دەردەکەون</p></div></div>
       <div class="step" style="--rgb:167,139,250"><div class="num">٢</div><div><h3>لە کۆمێنت وەڵام بدەوە</h3><p>تەنها یەک پیت بنووسە ( A , B , C , D )</p></div></div>
       <div class="step" style="--rgb:251,191,36"><div class="num">٣</div><div><h3>خاڵ کۆبکەرەوە و ببە بە پاڵەوان</h3><p>خێراترین وەڵام زۆرترین خاڵ دەبات</p></div></div>
       <div class="giftbox"><i class="fa-solid fa-gift"></i>بە ناردنی کۆینێک یان زیاتر لە پێشبڕکێدا دەبیت بۆ ئەوەی یەکەمی سەپۆرتەکە بیت</div>
@@ -295,7 +293,7 @@ body.demo #demo-badge{display:block}
         <div class="orbit"></div>
         <svg viewBox="0 0 100 100"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#c084fc"/></linearGradient></defs>
           <circle class="bgc" cx="50" cy="50" r="45"></circle><circle id="ring-pg" class="pg" cx="50" cy="50" r="45"></circle></svg>
-        <div style="text-align:center;z-index:1"><div id="ring-t" class="t">٣٠</div><div class="u" id="ring-u">چرکە بۆ پرسیاری یەکەم</div></div>
+        <div style="text-align:center;z-index:1"><div id="ring-t" class="t">٢٥</div><div class="u" id="ring-u">چرکە بۆ پرسیاری یەکەم</div></div>
       </div>
       <div class="eq"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
       <div class="keycard">
@@ -324,18 +322,18 @@ body.demo #demo-badge{display:block}
         <div class="chip ok"><i class="fa-solid fa-check-double"></i><span id="ans-n">٠ وەڵام</span></div>
       </div>
       
-      <!-- Permanent Supporters Bar during game -->
-      <div class="xcards" id="perm-supporters" style="margin-bottom: .2rem"></div>
-
       <div class="qcard">
         <div class="qtag" id="qtag">پرسیاری ١</div>
         <div class="qwrap" id="qwrap"><h2 id="qtext" class="qtext"></h2></div>
-        <div class="qfoot"><div class="tbar"><div id="qbar"></div></div><div class="tpill" id="tpill">٣٠ چرکە</div></div>
+        <div class="qfoot"><div class="tbar"><div id="qbar"></div></div><div class="tpill" id="tpill">١٥ چرکە</div></div>
       </div>
       <div class="opts" id="opts"></div>
       <div class="status" id="status"></div>
+      
+      <div class="xcards" id="perm-supporters" style="margin-top: .1rem; margin-bottom: .2rem"></div>
+
       <section class="board">
-        <div class="bhead"><span class="t"><i class="fa-solid fa-trophy"></i>پلەبەندی ٢٠ یەکەم</span><span class="lv"><i></i>نوێ دەبێتەوە دوای هەر پرسیارێک</span></div>
+        <div class="bhead"><span class="t"><i class="fa-solid fa-trophy"></i>ڕیزبەندی بەشداربووان</span><span class="lv"><i></i>خۆکار نوێ دەبێتەوە</span></div>
         <div class="bcols"><div class="bcol" id="bcol1"></div><div class="bcol" id="bcol2"></div></div>
       </section>
     </div>
@@ -348,18 +346,15 @@ body.demo #demo-badge{display:block}
       <div class="fin-sub" id="fin-sub"></div>
       <div class="podium" id="podium-final"></div>
       
-      <!-- Supporters on Final Screen -->
       <div style="text-align:center; font-size:0.75rem; font-weight:bold; color:#fbbf24; margin-top:.4rem;"><i class="fa-solid fa-crown"></i> باشترین سەپۆرتەرەکان</div>
       <div class="xcards" id="final-supporters" style="margin-bottom: .4rem"></div>
 
       <section class="board">
-        <div class="bhead"><span class="t"><i class="fa-solid fa-ranking-star"></i>ڕیزبەندی کۆتایی</span><span class="lv" style="color:#a5b4fc">پلەی ٤ بەرەو خوارەوە</span></div>
+        <div class="bhead"><span class="t"><i class="fa-solid fa-ranking-star"></i>ڕیزبەندی گشتی</span><span class="lv" style="color:#a5b4fc">پلەی ٤ بەرەو خوارەوە</span></div>
         <div class="bcols"><div class="bcol" id="fcol1"></div><div class="bcol" id="fcol2"></div></div>
       </section>
 
-      <!-- Restart Button -->
       <button id="final-reset-btn" class="mbtn" style="background: linear-gradient(90deg,#0891b2,#7c3aed); margin-top: auto;">دەستپێکردنەوەی خولی نوێ 🔄</button>
-
     </div>
   </div>
 
@@ -441,7 +436,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const BRAND = 'پێشبڕکێی زانیاری';
-const T = { countdown: 30, question: 30, reveal: 7 };
+const T = { countdown: 25, question: 15, reveal: 7 };
 const PTS = { max: 100, min: 10, streak: 25 };
 const AUDIO_FILES = { intro: '', lobby: '', quiz: '', reveal: '' };
 
@@ -462,12 +457,9 @@ async function loadQuestionsFromFirebase() {
         });
       }
     });
-    document.getElementById('db-status').style.color = '#34d399';
-    document.getElementById('db-status').innerHTML = `✅ ${QUESTIONS.length} پرسیار ئامادەیە لە داتابەیس`;
     updateNote();
   } catch(e) {
-    document.getElementById('db-status').style.color = '#fb7185';
-    document.getElementById('db-status').innerHTML = '❌ هەڵە لە هێنانی پرسیارەکان (فایەربەیس)';
+    console.error('Error fetching questions', e);
   }
 }
 loadQuestionsFromFirebase();
@@ -608,7 +600,7 @@ function stopMusic() {
   if (ac) { const t = ac.currentTime; musicG.gain.cancelScheduledValues(t); musicG.gain.setTargetAtTime(0, t, .04); }
 }
 const SLOTS = {
-  intro:  { label:'نامەی دەنگی (٣٠ چرکەی ئامادەکاری)', rec:true },
+  intro:  { label:'نامەی دەنگی (ئامادەکاری)', rec:true },
   lobby:  { label:'مۆسیقای ئامادەکاری' },
   quiz:   { label:'مۆسیقای کاتی پرسیار' },
   reveal: { label:'دەنگی تەواوبوونی کات و ئاشکرابوونی وەڵام' }
@@ -744,7 +736,6 @@ const curPts = f => Math.max(PTS.min, Math.round(PTS.max - (PTS.max - PTS.min) *
 
 function topExtra(map) { let b = null; map.forEach(v => { if (!b || v.v > b.v) b = v; }); return b; }
 
-// Render Supporters for both game screen and final screen
 function renderSupporters(containerId) {
   const grid = $(containerId);
   if (!grid) return;
@@ -967,16 +958,28 @@ function rowEl(rank, it, ghost) {
   const rk = h('span', 'rk'); if (rank === 1 && !ghost) rk.appendChild(ic('fa-solid fa-crown')); else rk.textContent = kn(rank);
   row.appendChild(rk);
   if (ghost) { row.append(h('span', 'av'), h('span', 'nm', '· · ·')); return row; }
-  const p = it.p; row.append(avatarEl(p, 'av'), h('span', 'nm', p.name));
+  
+  const p = it.p;
+  const nmSpan = h('span', 'nm');
+  if (G.gift.has(p.id)) {
+    const cr = ic('fa-solid fa-crown');
+    cr.style.color = 'var(--gold)';
+    cr.style.marginInlineEnd = '4px';
+    nmSpan.appendChild(cr);
+  }
+  nmSpan.appendChild(document.createTextNode(p.name));
+  
+  row.append(avatarEl(p, 'av'), nmSpan);
+  
   const bd = h('span', 'bd');
   if (p.streak >= 3) { const f = h('span', 'fire'); f.append(ic('fa-solid fa-fire'), document.createTextNode(kn(p.streak))); bd.appendChild(f); }
-  if (G.gift.has(p.id)) bd.appendChild(ic('fa-solid fa-gem gem'));
   if (it.delta > 0) bd.appendChild(ic('fa-solid fa-caret-up up')); else if (it.delta < 0) bd.appendChild(ic('fa-solid fa-caret-down dn'));
   if (bd.childNodes.length) row.appendChild(bd);
   row.appendChild(h('span', 'sc', kn(p.score)));
   if (it.gained) row.classList.add('flash');
   return row;
 }
+
 function paintBoard(c1, c2, items, start, perCol, total, ghosts) {
   c1.innerHTML = ''; c2.innerHTML = '';
   for (let i = 0; i < total; i++) {
@@ -984,6 +987,7 @@ function paintBoard(c1, c2, items, start, perCol, total, ghosts) {
     (i < perCol ? c1 : c2).appendChild(rowEl(start + i, it, !it));
   }
 }
+
 function refreshBoard(deltas) {
   const all = standings(), nr = new Map(); all.forEach((p, i) => nr.set(p.id, i + 1));
   const items = all.slice(0, 20).map((p, i) => ({ p, delta: deltas && G.prevRank.has(p.id) ? G.prevRank.get(p.id) - (i + 1) : 0, gained: deltas && p.gain > 0 }));
@@ -1002,12 +1006,19 @@ function renderPodium(box, top) {
     col.appendChild(bar); box.appendChild(col);
   });
 }
+
 function renderFinal() {
   const st = standings();
   $('fin-sub').textContent = kn(G.list.length) + ' پرسیار · ' + kn(st.length) + ' بەشداربوو';
   renderPodium($('podium-final'), st);
   renderSupporters('final-supporters');
-  paintBoard($('fcol1'), $('fcol2'), st.slice(3, 20).map(p => ({ p, delta:0, gained:false })), 4, 9, 17, false);
+  
+  const totalLeft = st.length > 3 ? st.length - 3 : 17;
+  const dispCount = Math.max(17, Math.min(100, totalLeft));
+  const items = st.slice(3, 3 + dispCount).map(p => ({ p, delta:0, gained:false }));
+  const half = Math.ceil(dispCount / 2);
+  
+  paintBoard($('fcol1'), $('fcol2'), items, 4, half, dispCount, false);
 }
 
 let parts = [], cRaf = 0, cSpawnUntil = 0;
@@ -1144,6 +1155,24 @@ function setDemo(on) {
   renderBans(); renderAudioRows(); loadCustom(); layout(); updateHost();
   renderSupporters('perm-supporters');
 })();
+// سکڕۆڵی ئۆتۆماتیکی تەنها بۆ شاشەی کۆتایی و هەموو بەشداربووان
+setInterval(() => {
+  if (G.paused || G.phase !== 'final') return; // تەنها لە شاشەی کۆتاییدا سکڕۆڵ دەکات
+  document.querySelectorAll('#screen-final .bcols').forEach(box => {
+    if (box.scrollHeight > box.clientHeight) {
+      let pos = parseFloat(box.dataset.pos || 0);
+      if (pos > box.scrollHeight) pos = 0; 
+      pos += 0.5; // خێرایی سکڕۆڵ
+      box.scrollTop = pos;
+      if (box.scrollTop + box.clientHeight >= box.scrollHeight - 1) {
+        pos = 0; 
+      }
+      box.dataset.pos = pos;
+    } else {
+      box.dataset.pos = 0;
+    }
+  });
+}, 30);
 </script>
 </body>
 </html>
