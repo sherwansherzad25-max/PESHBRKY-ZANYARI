@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-*{box-sizing:border-box}
+* {box-sizing:border-box}
 :root{
   --cy:#22d3ee;--vi:#a78bfa;--pk:#f472b6;--gold:#fbbf24;--ok:#34d399;--bad:#fb7185;
   --glass:rgba(255,255,255,.06);--line:rgba(255,255,255,.13);--top:3.6%;
@@ -17,7 +17,6 @@ body{font-family:'Vazirmatn',system-ui,sans-serif;color:#f8fafc;user-select:none
 body.safe-top{--top:10.5%}
 button,input,select{font-family:inherit}
 
-/* ============ Stage: fixed 9:16, scaled by rem ============ */
 #stage{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
   width:min(100vw,calc(100dvh*9/16));height:min(100dvh,calc(100vw*16/9));overflow:hidden;
   background:linear-gradient(180deg,#150b36 0%,#0a0620 55%,#05030f 100%);box-shadow:0 0 60px rgba(0,0,0,.7)}
@@ -46,7 +45,6 @@ button,input,select{font-family:inherit}
 .cdwrap{align-items:center;justify-content:space-evenly}
 .gt{background:linear-gradient(90deg,#67e8f9,#c4b5fd,#f9a8d4);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 
-/* ============ shared bits ============ */
 .chip{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .55rem;border-radius:.65rem;background:var(--glass);border:1px solid var(--line);font-size:.68rem;font-weight:800;white-space:nowrap}
 .chip i{font-size:.62rem}
 .chip.gold{color:var(--gold);border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.08)}
@@ -57,7 +55,6 @@ button,input,select{font-family:inherit}
 .av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ka{--kr:251,191,36}.kb{--kr:56,189,248}.kc{--kr:52,211,153}.kd{--kr:251,113,133}
 
-/* ============ Intro ============ */
 .livepill{display:inline-flex;align-items:center;gap:.4rem;padding:.25rem .85rem;border-radius:99px;font-size:.72rem;font-weight:800;color:#67e8f9;border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.08)}
 .livepill i{color:#fb7185;animation:blink 1.2s infinite}
 .big-title{font-size:2.1rem;font-weight:900;margin:.2rem 0 0;text-align:center;line-height:1.35;filter:drop-shadow(0 0 .8rem rgba(167,139,250,.5))}
@@ -72,7 +69,6 @@ button,input,select{font-family:inherit}
 .giftbox{width:100%;padding:.55rem .7rem;border-radius:1rem;text-align:center;border:1px solid rgba(251,191,36,.4);background:rgba(251,191,36,.07);font-size:.7rem;font-weight:700;color:#fef3c7;line-height:1.8}
 .giftbox i{color:var(--gold);margin-left:.35rem}
 
-/* ============ Countdown ============ */
 .cd-title{font-size:2rem;font-weight:900;margin:0;text-align:center;line-height:1.3;filter:drop-shadow(0 0 .8rem rgba(34,211,238,.45))}
 .hintbar{display:flex;align-items:center;gap:.5rem;padding:.4rem .8rem;border-radius:.9rem;border:1px solid rgba(251,191,36,.4);background:rgba(251,191,36,.08);font-size:.7rem;font-weight:700}
 .hintbar i{color:var(--gold)}
@@ -89,7 +85,6 @@ button,input,select{font-family:inherit}
 .eq{display:flex;gap:.2rem;align-items:flex-end;height:1.3rem}
 .eq span{width:.22rem;height:100%;border-radius:.2rem;background:linear-gradient(var(--cy),var(--pk));transform-origin:bottom;animation:eq 1s ease-in-out infinite}
 .eq span:nth-child(2n){animation-duration:.7s}.eq span:nth-child(3n){animation-duration:1.3s}.eq span:nth-child(4n){animation-delay:.2s}
-@keyframes eq{0%,100%{transform:scaleY(.2)}50%{transform:scaleY(1)}}
 .keycard{width:100%;border-radius:1.1rem;padding:.55rem .7rem .6rem;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid var(--line)}
 .keycaps{display:flex;gap:.55rem;justify-content:center;margin-bottom:.4rem}
 .cap{width:2.7rem;height:2.7rem;border-radius:.75rem;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:1.35rem;line-height:1;color:#0b0720;
@@ -101,7 +96,6 @@ button,input,select{font-family:inherit}
 .chips{display:flex;justify-content:center;margin-top:.3rem;min-height:1.6rem}
 .chips .av{width:1.6rem;height:1.6rem;font-size:.7rem;margin-inline:-.12rem;border:.1rem solid #0b0720;animation:pop .35s}
 
-/* ============ Question screen ============ */
 .topbar{height:2.2rem;display:flex;align-items:center;justify-content:space-between;gap:.4rem}
 .brand{display:flex;align-items:center;gap:.5rem;min-width:0}
 .logo{width:1.9rem;height:1.9rem;flex-shrink:0;border-radius:.65rem;background:linear-gradient(135deg,var(--cy),var(--vi) 55%,var(--pk));display:flex;align-items:center;justify-content:center;font-size:.9rem;box-shadow:0 0 .9rem rgba(167,139,250,.6)}
@@ -145,7 +139,6 @@ button,input,select{font-family:inherit}
 .keys{display:flex;gap:.22rem}
 .key{width:1.2rem;height:1.2rem;border-radius:.38rem;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.72rem;color:#0b0720;background:rgb(var(--kr))}
 
-/* Supporter cards */
 .xcards{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem;width:100%}
 .xc{min-width:0;padding:.18rem .4rem;border-radius:.6rem;background:rgba(255,255,255,.06);border:1px solid rgba(var(--rgb),.4)}
 .xc .l{font-size:.5rem;color:#cbd5e1;display:flex;align-items:center;gap:.2rem}.xc .l i{color:rgb(var(--rgb))}
@@ -153,7 +146,6 @@ button,input,select{font-family:inherit}
 .xc .v{font-size:.5rem;color:rgb(var(--rgb));font-weight:800}
 .xc .av{width:1rem;height:1rem;font-size:.5rem}
 
-/* ============ Board (Top/All) ============ */
 .board{flex:1 1 0;min-height:0;border-radius:1.05rem .85rem .85rem .85rem;display:flex;flex-direction:column;padding:.4rem .4rem .35rem;
   background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.025));border:1px solid var(--line)}
 .bhead{display:flex;justify-content:space-between;align-items:center;font-size:.66rem;font-weight:900;margin-bottom:.25rem;height:1rem;flex-shrink:0}
@@ -182,7 +174,6 @@ button,input,select{font-family:inherit}
 .brow.flash{animation:flash 1.6s ease}
 @keyframes flash{0%{background:rgba(52,211,153,.6);transform:scale(1.03)}100%{transform:none}}
 
-/* ============ Final ============ */
 .fin-title{font-size:1.8rem;font-weight:900;text-align:center;color:#fde68a;text-shadow:0 0 1rem rgba(251,191,36,.7);line-height:1.3}
 .fin-title i{margin-inline:.35rem;font-size:1.3rem}
 .fin-sub{font-size:.7rem;color:#c7d2fe;text-align:center;margin-top:-.1rem}
@@ -204,7 +195,6 @@ button,input,select{font-family:inherit}
 .big{position:absolute;bottom:.1rem;font-size:2.2rem;font-weight:900;opacity:.2}
 #confetti{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:30}
 
-/* ============ Overlays ============ */
 #settings-modal{position:absolute;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:1.2rem;background:rgba(3,2,12,.85)}
 #settings-modal.active{display:flex}
 .mbox{position:relative;width:100%;padding:1.2rem 1.1rem;border-radius:1.5rem;text-align:center;
@@ -225,7 +215,6 @@ body.guide #guide{display:block}
 body.demo #demo-badge{display:block}
 #hotspot{position:absolute;top:0;left:0;width:3.2rem;height:3.2rem;z-index:60}
 
-/* ============ Host panel ============ */
 #host{position:fixed;z-index:100;left:50%;bottom:0;transform:translate(-50%,105%);width:min(100vw,440px);max-height:80dvh;overflow-y:auto;
   background:#0b1220;border:1px solid #334155;border-radius:16px 16px 0 0;padding:14px;transition:transform .25s;font-size:14px;color:#e2e8f0;user-select:text}
 #host.open{transform:translate(-50%,0)}
@@ -625,18 +614,41 @@ function playCustom(slot, loop) {
   return a;
 }
 function stopCustom(slot) { const a = playing[slot]; if (a) { try { a.pause(); } catch (e) {} delete playing[slot]; } }
-function stopAll() { stopMusic(); Object.keys(playing).forEach(stopCustom); if (G.duck) setDuck(false); }
+
+let customVoice = null;
+function playCustomVoice(filename, loop = false) {
+  if(customVoice) { customVoice.pause(); customVoice = null; }
+  if(!filename) return;
+  customVoice = new Audio('audio/' + filename);
+  customVoice.loop = loop;
+  customVoice.play().catch(e => {});
+}
+
+function stopAll() { 
+  stopMusic(); 
+  Object.keys(playing).forEach(stopCustom); 
+  if (G.duck) setDuck(false); 
+  if(customVoice) { customVoice.pause(); customVoice = null; }
+}
+
 function playPhaseAudio(name) {
   stopAll();
-  if (name === 'countdown') {
-    if (!playCustom('lobby', true)) startMusic('lobby');
-    if (playCustom('intro', false)) setDuck(true);
+  if (name === 'intro') {
+    playCustomVoice('welcome.mp3', true);
+  } else if (name === 'countdown') {
+    playCustomVoice('countdown.mp3', false);
   } else if (name === 'question') {
-    SFX.go(); if (!playCustom('quiz', true)) startMusic('quiz');
+    playCustomVoice('question.mp3', false);
   } else if (name === 'reveal') {
-    if (!playCustom('reveal', false)) SFX.reveal();
-  } else if (name === 'final') { SFX.fanfare(); }
+    if (G.list && G.list[G.qi]) {
+      const ansLetter = ['a', 'b', 'c', 'd'][G.list[G.qi].answer];
+      playCustomVoice('correct_' + ansLetter + '.mp3', false);
+    }
+  } else if (name === 'final') {
+    playCustomVoice('final.mp3', false);
+  }
 }
+
 function pauseAudio(on) {
   if (ac) { try { on ? ac.suspend() : ac.resume(); } catch (e) {} }
   Object.values(playing).forEach(a => { try { if (on) a.pause(); else { const p = a.play(); if (p && p.catch) p.catch(() => {}); } } catch (e) {} });
@@ -867,7 +879,7 @@ function endNow() {
 function resetGame() {
   if (G.phase !== 'intro' && G.phase !== 'final' && !confirm('دڵنیایت دەتەوێت بگەڕێیتەوە بۆ شاشەی سەرەکی؟')) return;
   stopConfetti(); stopAll(); G.phase = 'intro'; G.paused = false; $('pause-overlay').classList.remove('on');
-  showScreen('screen-intro'); updateHost();
+  showScreen('screen-intro'); playPhaseAudio('intro'); updateHost();
 }
 $('final-reset-btn').addEventListener('click', resetGame);
 
@@ -1102,7 +1114,7 @@ $('h-csv').addEventListener('click', () => {
   if (!st.length) { alert('هیچ ئەنجامێک نییە'); return; }
   const safe = v => { let s = String(v); if (/^[=+\-@]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; };
   const rows = [['rank','name','userId','score','correct']].concat(st.map(r => [r.rank, r.name, r.id, r.score, r.correct]));
-  const csv = '﻿' + rows.map(r => r.map(safe).join(',')).join('\n');
+  const csv = '\uFEFF' + rows.map(r => r.map(safe).join(',')).join('\n');
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv;charset=utf-8' }));
   a.download = 'quiz-results.csv'; document.body.appendChild(a); a.click(); a.remove();
 });
@@ -1154,15 +1166,16 @@ function setDemo(on) {
   $('inp-count').value = G.count;
   renderBans(); renderAudioRows(); loadCustom(); layout(); updateHost();
   renderSupporters('perm-supporters');
+  playPhaseAudio('intro');
 })();
-// سکڕۆڵی ئۆتۆماتیکی تەنها بۆ شاشەی کۆتایی و هەموو بەشداربووان
+
 setInterval(() => {
-  if (G.paused || G.phase !== 'final') return; // تەنها لە شاشەی کۆتاییدا سکڕۆڵ دەکات
+  if (G.paused || G.phase !== 'final') return;
   document.querySelectorAll('#screen-final .bcols').forEach(box => {
     if (box.scrollHeight > box.clientHeight) {
       let pos = parseFloat(box.dataset.pos || 0);
       if (pos > box.scrollHeight) pos = 0; 
-      pos += 0.5; // خێرایی سکڕۆڵ
+      pos += 0.5;
       box.scrollTop = pos;
       if (box.scrollTop + box.clientHeight >= box.scrollHeight - 1) {
         pos = 0; 
