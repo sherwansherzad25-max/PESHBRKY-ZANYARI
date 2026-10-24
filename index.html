@@ -821,6 +821,11 @@ function startGame() {
 function beginQuestion() {
   G.qi++; G.answers = new Map(); G.counts = [0,0,0,0]; G.feed = []; G.statusSig = '';
   G.players.forEach(p => { p.gain = 0; });
+  
+  // لێدانی یەکێک لە 4 دەنگە نوێیەکەی پرسیار بە هەڕەمەکی
+  const randQAudio = Math.floor(Math.random() * 4) + 1;
+  playCustomVoice('question_' + randQAudio + '.mp3', false);
+
   setPhase('question', T.question * 1000);
   showScreen('screen-question'); renderQuestion(); refreshBoard(false); renderStatus(0); updateQuestion(0, G.dur); updateTop();
 }
