@@ -638,7 +638,9 @@ function playPhaseAudio(name) {
   } else if (name === 'countdown') {
     playCustomVoice('countdown.mp3', false);
   } else if (name === 'question') {
-    playCustomVoice('question.mp3', false);
+    // لێرەدا یەکێک لە 4 دەنگەکەی پرسیار بە هەڕەمەکی هەڵدەبژێرێت
+    const randQ = Math.floor(Math.random() * 4) + 1;
+    playCustomVoice('question_' + randQ + '.mp3', false);
   } else if (name === 'reveal') {
     if (G.list && G.list[G.qi]) {
       const ansLetter = ['a', 'b', 'c', 'd'][G.list[G.qi].answer];
@@ -821,11 +823,6 @@ function startGame() {
 function beginQuestion() {
   G.qi++; G.answers = new Map(); G.counts = [0,0,0,0]; G.feed = []; G.statusSig = '';
   G.players.forEach(p => { p.gain = 0; });
-  
-  // لێدانی یەکێک لە 4 دەنگە نوێیەکەی پرسیار بە هەڕەمەکی
-  const randQAudio = Math.floor(Math.random() * 4) + 1;
-  playCustomVoice('question_' + randQAudio + '.mp3', false);
-
   setPhase('question', T.question * 1000);
   showScreen('screen-question'); renderQuestion(); refreshBoard(false); renderStatus(0); updateQuestion(0, G.dur); updateTop();
 }
