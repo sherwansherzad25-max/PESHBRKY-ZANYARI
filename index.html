@@ -432,6 +432,17 @@ const AUDIO_FILES = { intro: '', lobby: '', quiz: '', reveal: '' };
 let QUESTIONS = [];
 
 async function loadQuestionsFromFirebase() {
+  const startBtn = document.getElementById('m-start');
+  const noteBox = document.getElementById('modal-note');
+  
+  // داخستنی دوگمەکە لە کاتی هێنانی زانیارییەکان
+  if(startBtn) {
+    startBtn.disabled = true;
+    startBtn.textContent = 'چاوەڕێ بە، پرسیارەکان دادەبەزن...';
+    startBtn.style.opacity = '0.5';
+    startBtn.style.cursor = 'not-allowed';
+  }
+  
   try {
     const qSnap = await getDocs(collection(db, "questions"));
     const ansMap = { "A": 0, "B": 1, "C": 2, "D": 3 };
@@ -447,8 +458,21 @@ async function loadQuestionsFromFirebase() {
       }
     });
     updateNote();
+    
+    // کردنەوەی دوگمەکە دوای گەیشتنی پرسیارەکان
+    if(startBtn && QUESTIONS.length > 0) {
+      startBtn.disabled = false;
+      startBtn.textContent = 'دەستپێکردن';
+      startBtn.style.opacity = '1';
+      startBtn.style.cursor = 'pointer';
+    } else if (startBtn) {
+      startBtn.textContent = 'هیچ پرسیارێک نەدۆزرایەوە';
+    }
+
   } catch(e) {
     console.error('Error fetching questions', e);
+    if(noteBox) noteBox.textContent = 'کێشە هەیە لە هێنانی پرسیارەکان، هێڵی ئینتەرنێتەکەت بپشکنە';
+    if(startBtn) startBtn.textContent = 'کێشەی هێڵ';
   }
 }
 loadQuestionsFromFirebase();
