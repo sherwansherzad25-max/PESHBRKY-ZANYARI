@@ -181,7 +181,7 @@ button,input,select{font-family:inherit}
 .pcol{width:33%;min-width:0;display:flex;flex-direction:column;align-items:center}
 .avwrap{position:relative;margin-top:1rem}
 .pcol .av{border:.15rem solid}
-.r1 .av{width:3.6rem;height:3.6rem;font-size:1.4rem;border-color:#facc15;box-shadow:0 0 1.2rem rgba(250,204,21,.65)}
+.pcol.r1 .av{width:3.6rem;height:3.6rem;font-size:1.4rem;border-color:#facc15;box-shadow:0 0 1.2rem rgba(250,204,21,.65)}
 .pcol.r2 .av,.pcol.r3 .av{width:2.8rem;height:2.8rem;font-size:1.1rem}
 .pcol.r2 .av{border-color:#cbd5e1}.pcol.r3 .av{border-color:#d97706}
 .crown{position:absolute;top:-1.15rem;left:50%;transform:translateX(-50%);color:#facc15;font-size:1.1rem;filter:drop-shadow(0 0 .3rem rgba(0,0,0,.6))}
@@ -1212,6 +1212,30 @@ setInterval(() => {
     }
   });
 }, 30);
+
+// =====================================================================
+//  پەیوەندی لەگەڵ سێرڤەری تیکتۆک (server.js) لە ڕێگەی WebSocket
+//  کۆمێنت و دیاری و لایک و شەیر لە سێرڤەرەوە دێنە ناو یاریەکە
+// =====================================================================
+(function connectBridge() {
+  let ws;
+  try {
+    ws = new WebSocket((location.protocol === 'https:' ? 'wss://' : 'ws://') + location.host);
+  } catch (e) { return; } // ئەگەر پەیجەکە بە file:// کرابێتەوە، ئەمە کار ناکات
+  ws.onopen = () => console.log('✅ بەستراوەتەوە بە سێرڤەری تیکتۆک');
+  ws.onmessage = e => {
+    try {
+      const { type, data } = JSON.parse(e.data);
+      const g = window.QuizGame;
+      if (!g) return;
+      if (type === 'chat') g.onComment(data);
+      else if (type === 'gift') g.onGift(data);
+      else if (type === 'like') g.onLike(data);
+      else if (type === 'share') g.onShare(data);
+    } catch (err) {}
+  };
+  ws.onclose = () => setTimeout(connectBridge, 2000);
+})();
 </script>
 </body>
 </html>
