@@ -474,7 +474,7 @@ body.demo #demo-badge{display:block}
       <div class="qcard">
         <div class="qtag" id="qtag">پرسیاری ١</div>
         <div class="qwrap" id="qwrap"><h2 id="qtext" class="qtext"></h2></div>
-        <div class="qfoot"><div class="tbar"><div id="qbar"></div></div><div class="tpill" id="tpill">١٥ چرکە</div></div>
+        <div class="qfoot"><div class="tbar"><div id="qbar"></div></div><div class="tpill" id="tpill">٢٠ چرکە</div></div>
       </div>
       <div class="opts" id="opts"></div>
       <div class="status" id="status"></div>
@@ -586,7 +586,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const BRAND = 'پێشبڕکێی زانیاری';
-const T = { countdown: 25, question: 15, reveal: 7 };
+const T = { countdown: 25, question: 20, reveal: 7 };
 const PTS = { max: 100, min: 10, streak: 25 };
 const AUDIO_FILES = { intro: '', lobby: '', quiz: '', reveal: '' };
 
@@ -999,7 +999,18 @@ function startGame() {
   const count = clamp(parseInt($('inp-count').value, 10) || 10, 10, 30);
   if (!QUESTIONS.length) { $('modal-note').textContent = 'هیچ پرسیارێک نییە'; return; }
   G.count = count; LS.set('quizCount', count);
-  G.list = shuffle(QUESTIONS.slice()).slice(0, count);
+  // پرسیاری بەکارهێنراو لە خولی پێشوودا دووبارە نەبێتەوە (تا هەموو پرسیارەکان تەواو دەبن)
+  const qkey = q => q.q + '|' + q.options.join('|');
+  let used = new Set(LS.get('quizUsed', []));
+  let fresh = shuffle(QUESTIONS.filter(q => !used.has(qkey(q))));
+  if (fresh.length >= count) { G.list = fresh.slice(0, count); }
+  else {
+    const rest = shuffle(QUESTIONS.filter(q => used.has(qkey(q)))).slice(0, count - fresh.length);
+    G.list = fresh.concat(rest);
+    used = new Set(rest.map(qkey)); // هەموو پرسیارەکان تەواو بوون، سەرلەنوێ دەست پێدەکاتەوە
+  }
+  G.list.forEach(q => used.add(qkey(q)));
+  LS.set('quizUsed', [...used]);
   G.qi = -1; G.players = new Map(); G.joinOrder = []; G.joinDirty = true; G.pendingBoost = new Set();
   G.gift = new Map(); G.like = new Map(); G.share = new Map(); G.prevRank = new Map();
   G.answers = new Map(); G.counts = [0,0,0,0]; G.feed = []; G.paused = false; $('pause-overlay').classList.remove('on');
