@@ -101,8 +101,8 @@ function who(d) {
   const pp = u.profilePicture || {};
   const pic = d.profilePictureUrl || (pp.urls && pp.urls[0]) || (pp.url && pp.url[0]) || '';
   return {
-    userId: d.uniqueId || u.uniqueId || d.userId || u.userId || '',
-    nickname: d.nickname || u.nickname || d.uniqueId || u.uniqueId || '',
+    userId: String(d.uniqueId || u.uniqueId || u.displayId || d.userId || u.userId || u.idStr || u.id || u.secUid || u.nickname || d.nickname || '').trim(),
+    nickname: String(d.nickname || u.nickname || d.uniqueId || u.uniqueId || u.displayId || '').trim(),
     avatar: pic
   };
 }
