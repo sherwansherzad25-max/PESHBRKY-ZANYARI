@@ -172,7 +172,12 @@ async function connectTikTok() {
       sendToGame('gift', { ...w, coins });
     });
 
-    tt.on(EV('LIKE', 'like'), d => { stats.like += (d.likeCount || 1); sendToGame('like', { ...who(d), count: d.likeCount || 1 }); });
+    tt.on(EV('LIKE', 'like'), d => {
+      // v2.5: ژمارەی لایکەکان لە «count» دایە (نەک likeCount)
+      const n = Math.max(1, Number(d.count || d.likeCount || 1) || 1);
+      stats.like += n;
+      sendToGame('like', { ...who(d), count: n });
+    });
     tt.on(EV('SHARE', 'share'), d => {
       const w = who(d);
       stats.share++;
