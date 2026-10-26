@@ -70,7 +70,17 @@ function sendFile(req, res, file) {
 
 const server = http.createServer((req, res) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405); return res.end(); }
-  const file = resolveFile((req.url || '/').split('?')[0]);
+  const urlPath = (req.url || '/').split('?')[0];
+  // /status: بۆ بینینی ئەوەی تیکتۆک چی ناردووە و چەند پەیج بەستراوە (کراوەیە لە براوزەر)
+  if (urlPath === '/status') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+    return res.end(JSON.stringify({
+      tiktokConnected, username: TIKTOK_USERNAME,
+      connectedSecondsAgo: tiktokConnected ? Math.round((Date.now() - connectedAt) / 1000) : null,
+      received: stats, gamePagesConnected: wss.clients.size
+    }, null, 2));
+  }
+  const file = resolveFile(urlPath);
   if (!file) return notFound(res, req.url);
   sendFile(req, res, file);
 });
@@ -105,6 +115,9 @@ let tt = null;
 let connecting = false;
 let retryTimer = null;
 let fails = 0;
+let tiktokConnected = false;
+let connectedAt = 0;
+const stats = { chat: 0, gift: 0, like: 0, share: 0 }; // ئەوەی لە تیکتۆکەوە گەیشتووە
 
 function scheduleRetry(was429) {
   if (retryTimer) return;
@@ -131,11 +144,16 @@ async function connectTikTok() {
       enableExtendedGiftInfo: false
     });
 
-    tt.on('disconnected', () => { console.warn('⚠️ پچڕا'); scheduleRetry(false); });
+    tt.on('disconnected', () => { tiktokConnected = false; console.warn('⚠️ پچڕا'); scheduleRetry(false); });
     tt.on('error', e => console.warn('⚠️ هەڵەی تیکتۆک:', (e && (e.message || e.info)) || e));
     tt.on(EV('STREAM_END', 'streamEnd'), () => console.warn('⚠️ لایڤ کۆتایی هات'));
 
-    tt.on(EV('CHAT', 'chat'), d => sendToGame('chat', { ...who(d), comment: d.comment }));
+    tt.on(EV('CHAT', 'chat'), d => {
+      stats.chat++;
+      const w = who(d);
+      console.log('💬 ' + w.nickname + ': ' + String(d.comment || '').slice(0, 60));
+      sendToGame('chat', { ...w, comment: d.comment });
+    });
 
     tt.on(EV('GIFT', 'gift'), d => {
       // دیاری بەردەوام (streak): تەنها کاتێک دەژمێردرێت کە تەواو بوو.
@@ -144,14 +162,25 @@ async function connectTikTok() {
       const ended = d.repeatEnd === true || Number(d.repeatEnd) === 1;
       if (gt === 1 && !ended) return;
       const diamonds = d.diamondCount || (d.giftDetails && d.giftDetails.diamondCount) || 1;
-      sendToGame('gift', { ...who(d), coins: diamonds * (d.repeatCount || 1) });
+      const coins = diamonds * (d.repeatCount || 1);
+      const w = who(d);
+      stats.gift++;
+      console.log('🎁 ' + w.nickname + ': ' + coins + ' کۆین');
+      sendToGame('gift', { ...w, coins });
     });
 
-    tt.on(EV('LIKE', 'like'), d => sendToGame('like', { ...who(d), count: d.likeCount || 1 }));
-    tt.on(EV('SHARE', 'share'), d => sendToGame('share', who(d)));
+    tt.on(EV('LIKE', 'like'), d => { stats.like += (d.likeCount || 1); sendToGame('like', { ...who(d), count: d.likeCount || 1 }); });
+    tt.on(EV('SHARE', 'share'), d => {
+      const w = who(d);
+      stats.share++;
+      console.log('↗️ ' + w.nickname + ' لایڤی شەیر کرد');
+      sendToGame('share', w);
+    });
 
     const state = await tt.connect();
     fails = 0;
+    tiktokConnected = true;
+    connectedAt = Date.now();
     console.info('✅ بە لایڤەکە بەسترایەوە، roomId: ' + state.roomId);
   } catch (err) {
     const msg = String((err && (err.message || (err.exception && err.exception.message))) || err);
@@ -191,5 +220,15 @@ server.listen(PORT, () => {
   if (missing.length) console.warn('⚠️ ئەم فایلە دەنگییانە لە فۆڵدەری audio نین: ' + missing.join(', '));
   else console.log('🔊 هەموو فایلە دەنگییەکان دۆزرانەوە');
 });
+
+// هەر ٣٠ چرکە: چەند ڕووداو لە تیکتۆکەوە گەیشتووە و چەند پەیجی یاری بەستراوە
+setInterval(() => {
+  if (!tiktokConnected) return;
+  const pages = wss.clients.size;
+  const total = stats.chat + stats.gift + stats.like + stats.share;
+  console.log('📊 لە تیکتۆکەوە: کۆمێنت ' + stats.chat + ' · دیاری ' + stats.gift + ' · لایک ' + stats.like + ' · شەیر ' + stats.share + '   |   پەیجی یاری بەستراو: ' + pages);
+  if (pages === 0) console.warn('⚠️ هیچ پەیجێکی یاری بەستراو نییە، ڕووداوەکان دەفەوتێن. پەیجەکە بکەرەوە.');
+  else if (total === 0 && Date.now() - connectedAt > 60000) console.warn('⚠️ ٦٠ چرکە تێپەڕی و تیکتۆک هیچی نەناردووە. لە ئەکاونتێکی تر کۆمێنت و لایک بکە؛ ئەگەر هێشتا هیچ نەبوو، IP ـی سێرڤەر سنووردارە.');
+}, 30000);
 
 connectTikTok();
