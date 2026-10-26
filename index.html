@@ -1228,11 +1228,12 @@ setInterval(() => {
       const { type, data } = JSON.parse(e.data);
       const g = window.QuizGame;
       if (!g) return;
+      console.log('📩', type, JSON.stringify(data), '| دۆخ:', G.phase, '| ڕاگیراو:', G.paused, '| وەڵام:', type === 'chat' ? parseAnswer(data.comment) : '');
       if (type === 'chat') g.onComment(data);
       else if (type === 'gift') g.onGift(data);
       else if (type === 'like') g.onLike(data);
       else if (type === 'share') g.onShare(data);
-    } catch (err) {}
+    } catch (err) { console.error('❌ هەڵە لە وەرگرتن:', err); }
   };
   ws.onclose = () => setTimeout(connectBridge, 2000);
 })();
