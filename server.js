@@ -151,8 +151,11 @@ async function connectTikTok() {
     tt.on(EV('CHAT', 'chat'), d => {
       stats.chat++;
       const w = who(d);
-      console.log('💬 ' + w.nickname + ': ' + String(d.comment || '').slice(0, 60));
-      sendToGame('chat', { ...w, comment: d.comment });
+      // v2.5: متنی کۆمێنت لە «content» دایە، نەک «comment»
+      const text = String(d.content || d.comment || d.text || '').trim();
+      if (!text) console.log('⚠️ کۆمێنتی بەتاڵ — کلیلەکان: ' + Object.keys(d).join(','));
+      console.log('💬 ' + w.nickname + ': ' + text.slice(0, 60));
+      if (text) sendToGame('chat', { ...w, comment: text });
     });
 
     tt.on(EV('GIFT', 'gift'), d => {
