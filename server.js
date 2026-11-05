@@ -158,15 +158,31 @@ async function connectTikTok() {
       if (text) sendToGame('chat', { ...w, comment: text });
     });
 
+    // دیاری: هەر پەیامێک تەنها ئەو بڕە زیادەیە دەژمێرێت کە پێشتر نەژمێردراوە (بۆ ئەوەی دووجار نەژمێردرێت)
+    // دیاری بەردەوام (streak) هەر چەند جارێک پەیام دەنێرێت (١، ٢، ٣ ...) و لە کۆتاییدا repeatEnd دەبێت
+    const streaks = new Map();
+    setInterval(() => { const now = Date.now(); for (const [k, v] of streaks) if (now - v.t > 300000) streaks.delete(k); }, 60000);
     tt.on(EV('GIFT', 'gift'), d => {
-      // دیاری بەردەوام (streak): تەنها کاتێک دەژمێردرێت کە تەواو بوو.
-      // لە وەشانی ٢ repeatEnd ژمارەیە (٠ یان ١) و لە وەشانی ١ true/false ـە
-      const gt = d.giftType != null ? d.giftType : (d.giftDetails && d.giftDetails.giftType);
+      const gd = d.giftDetails || {};
+      const diamonds = Number(d.diamondCount || gd.diamondCount || 1) || 1;
+      const rc = Math.max(1, Number(d.repeatCount || d.comboCount || 1) || 1);
       const ended = d.repeatEnd === true || Number(d.repeatEnd) === 1;
-      if (gt === 1 && !ended) return;
-      const diamonds = d.diamondCount || (d.giftDetails && d.giftDetails.diamondCount) || 1;
-      const coins = diamonds * (d.repeatCount || 1);
       const w = who(d);
+      const gid = d.groupId && String(d.groupId) !== '0' ? String(d.groupId) : '';
+      let add;
+      if (gid) {
+        const key = w.userId + ':' + String(d.giftId || gd.id || '') + ':' + gid;
+        const prev = streaks.get(key);
+        add = rc - (prev ? prev.n : 0);
+        if (add <= 0) return; // هەمان پەیام دووبارە هاتووەتەوە
+        streaks.set(key, { n: rc, t: Date.now() });
+      } else {
+        // ئەگەر groupId نەبوو: شێوازی کۆن — دیاری بەردەوام تەنها لە کۆتاییدا دەژمێردرێت
+        const gt = d.giftType != null ? d.giftType : gd.giftType;
+        if (gt === 1 && !ended) return;
+        add = rc;
+      }
+      const coins = diamonds * add;
       stats.gift++;
       console.log('🎁 ' + w.nickname + ': ' + coins + ' کۆین');
       sendToGame('gift', { ...w, coins });
