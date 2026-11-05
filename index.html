@@ -406,6 +406,31 @@ body.demo #demo-badge{display:block}
 #host .hb.pri{background:linear-gradient(180deg,#0ea5c6,#0b7490);border-color:#2ee6ff}
 #host .hb.dng{background:linear-gradient(180deg,#a02424,#6b1414)}
 #h-stat{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+
+/* پەیامی هاندان (کۆین / لایک / شەیر / فۆڵۆو) — هەندێک جار لە سەرەوە دەردەکەوێت */
+#cta{position:absolute;left:3%;right:3%;top:var(--top);height:2.3rem;z-index:25;pointer-events:none;display:flex;align-items:center;justify-content:center;gap:.5rem;
+  padding:0 .8rem;border-radius:.9rem;font-weight:900;font-size:.82rem;line-height:1.2;text-align:center;color:#fff;
+  background:linear-gradient(90deg,rgba(var(--rgb),.92),rgba(var(--rgb),.62));border:1px solid rgba(255,255,255,.45);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 1.4rem rgba(var(--rgb),.75),0 .4rem 1rem rgba(0,0,0,.45);text-shadow:0 .08rem .3rem rgba(0,0,0,.5);
+  opacity:0;transform:translateY(-.9rem) scale(.96);transition:opacity .35s,transform .45s cubic-bezier(.2,1.3,.4,1)}
+#cta.on{opacity:1;transform:none}
+#cta .em{font-size:1.15rem;animation:floaty 1.2s ease-in-out infinite}
+
+/* پەیامی کۆین (دیاری) لەسەر شاشە */
+#gifts{position:absolute;left:3%;right:3%;top:calc(var(--top) + 2.7rem);z-index:24;pointer-events:none;display:flex;flex-direction:column;gap:.25rem;align-items:center}
+.gt-toast{display:flex;align-items:center;gap:.45rem;min-width:50%;max-width:100%;padding:.18rem .6rem .18rem .3rem;border-radius:1.4rem;color:#fff;
+  background:linear-gradient(90deg,rgba(250,204,21,.95),rgba(245,158,11,.85) 55%,rgba(236,72,153,.8));border:1px solid rgba(255,255,255,.55);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 0 1.4rem rgba(250,204,21,.65),0 .4rem 1rem rgba(0,0,0,.45);
+  opacity:0;transform:translateX(-120%) scale(.9);transition:opacity .3s,transform .5s cubic-bezier(.2,1.3,.4,1)}
+.gt-toast.on{opacity:1;transform:none}
+.gt-toast.out{opacity:0;transform:translateY(-.8rem) scale(.95);transition:opacity .35s,transform .35s}
+.gt-toast .av{width:1.7rem;height:1.7rem;flex:none;border:2px solid #fff}
+.gt-toast .gx{flex:1;min-width:0;text-shadow:0 .08rem .3rem rgba(0,0,0,.55)}
+.gt-toast .gn{font-weight:900;font-size:.74rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gt-toast .gs{font-weight:700;font-size:.58rem;opacity:.95}
+.gt-toast .gc{flex:none;font-weight:900;font-size:1.05rem;line-height:1;text-shadow:0 .1rem .4rem rgba(0,0,0,.6);display:flex;align-items:center;gap:.25rem}
+.gt-toast .gc.pop{animation:gpop .35s ease}
+@keyframes gpop{0%{transform:scale(1)}40%{transform:scale(1.45)}100%{transform:scale(1)}}
 </style>
 </head>
 <body>
@@ -474,7 +499,7 @@ body.demo #demo-badge{display:block}
       <div class="qcard">
         <div class="qtag" id="qtag">پرسیاری ١</div>
         <div class="qwrap" id="qwrap"><h2 id="qtext" class="qtext"></h2></div>
-        <div class="qfoot"><div class="tbar"><div id="qbar"></div></div><div class="tpill" id="tpill">٢٠ چرکە</div></div>
+        <div class="qfoot"><div class="tbar"><div id="qbar"></div></div><div class="tpill" id="tpill">٢٣ چرکە</div></div>
       </div>
       <div class="opts" id="opts"></div>
       <div class="status" id="status"></div>
@@ -586,7 +611,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const BRAND = 'پێشبڕکێی زانیاری';
-const T = { countdown: 25, question: 20, reveal: 7 };
+const T = { countdown: 25, question: 23, reveal: 7 };
 const PTS = { max: 100, min: 10, streak: 25 };
 const AUDIO_FILES = { intro: '', lobby: '', quiz: '', reveal: '' };
 
@@ -969,7 +994,7 @@ function onComment(ev) {
   if (ok) {
     p.streak++; pts = base;
     if (p.streak >= 3) pts += PTS.streak;
-    if (p.boost) { pts *= 2; p.boost = false; }
+    // (دووقاتکردنی خاڵ بە گیفت لابرا — یاری بێ پارە و یەکسانە)
     p.score += pts; p.correct++; p.time += ms;
   } else { p.streak = 0; }
   p.gain = pts;
@@ -983,11 +1008,36 @@ function addExtra(map, ev, n) {
   const e = map.get(id) || { name, v:0, avatar:ev.avatar || '', id }; e.name = name; e.v += n; map.set(id, e); 
   return id;
 }
+// پەیامی جوانی کۆین: ناو و وێنەی ناردەر + ژمارەی ڕاستەقینەی کۆینەکان (ئەگەر هەمان کەس دووبارە بنێرێت ژمارەکە زیاد دەبێت)
+const GIFT_TOASTS = new Map();
+function showGiftToast(id, ev, coins) {
+  let box = $('gifts');
+  if (!box) { box = h('div'); box.id = 'gifts'; $('stage').appendChild(box); }
+  const name = (String(ev.nickname || id).trim() || id).slice(0, 24);
+  let t = GIFT_TOASTS.get(id);
+  if (t && t.el.isConnected) {
+    t.total += coins; clearTimeout(t.timer);
+    t.num.textContent = kn(t.total); t.cEl.classList.remove('pop'); void t.cEl.offsetWidth; t.cEl.classList.add('pop');
+  } else {
+    const el = h('div', 'gt-toast'), gx = h('div', 'gx'), gn = h('div', 'gn', name), gs = h('div', 'gs', 'کۆینی ناردووە'), cEl = h('div', 'gc'), num = h('span', '', kn(coins));
+    gx.append(gn, gs); cEl.append(num, document.createTextNode('🪙'));
+    el.append(avatarEl({ id, name, avatar: ev.avatar || '' }, 'av'), gx, cEl);
+    box.appendChild(el);
+    while (box.children.length > 2) { const o = box.firstChild; for (const [k, v] of GIFT_TOASTS) if (v.el === o) GIFT_TOASTS.delete(k); o.remove(); }
+    t = { el, num, cEl, total: coins, timer: 0 }; GIFT_TOASTS.set(id, t);
+    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('on')));
+  }
+  t.timer = setTimeout(() => {
+    t.el.classList.add('out');
+    setTimeout(() => { t.el.remove(); if (GIFT_TOASTS.get(id) === t) GIFT_TOASTS.delete(id); }, 400);
+  }, 3800);
+}
 function onGift(ev) { 
-  const id = addExtra(G.gift, ev, Math.max(1, +ev.coins || 1)); 
+  const coins = Math.max(1, +ev.coins || 1);
+  const id = addExtra(G.gift, ev, coins); 
   if (!id) return; 
   const p = G.players.get(id); 
-  if (p) p.boost = true; else G.pendingBoost.add(id);
+  showGiftToast(id, ev, coins);
   renderSupporters('perm-supporters');
 }
 function onLike(ev) { addExtra(G.like, ev, Math.max(1, +ev.count || 1)); renderSupporters('perm-supporters'); }
@@ -1397,6 +1447,37 @@ setInterval(() => {
 //  پەیوەندی لەگەڵ سێرڤەری تیکتۆک (server.js) لە ڕێگەی WebSocket
 //  کۆمێنت و دیاری و لایک و شەیر لە سێرڤەرەوە دێنە ناو یاریەکە
 // =====================================================================
+
+// ===== پەیامی هاندان بۆ بینەر =====
+(function ctaLoop() {
+  const MSGS = [
+    { e:'🪙', t:'سەپۆرتی لایڤەکە بکە و ببە بە سەپۆرتەری یەکەم!', rgb:'234,160,12' },
+    { e:'❤️', t:'دووجار پەنجە بنێ بۆ لایک و ببە بە پاشای لایک!', rgb:'219,39,119' },
+    { e:'🔗', t:'لایڤەکە شەیر بکە بۆ هاوڕێکانت!', rgb:'37,99,235' },
+    { e:'➕', t:'فۆڵۆو بکە بۆ ئەوەی هیچ پرسیارێک لەدەست نەدەیت!', rgb:'124,58,237' },
+    { e:'💬', t:'وەڵام لە کۆمێنت بنووسە: A یان B یان C یان D', rgb:'8,145,178' }
+  ];
+  const EVERY = 45, SHOW = 6; // هەر ٤٥ چرکە جارێک، بۆ ٦ چرکە
+  const el = document.createElement('div'); el.id = 'cta'; el.innerHTML = '<span class="em"></span><span class="tx"></span>';
+  $('stage').appendChild(el);
+  const lab = document.createElement('label'); lab.className = 'tg';
+  lab.innerHTML = '<input type="checkbox" id="h-cta"> پەیامی هاندان (کۆین، لایک، شەیر، فۆڵۆو)';
+  const demo = $('h-demo'); demo.parentElement.parentElement.insertBefore(lab, demo.parentElement);
+  const chk = $('h-cta'); chk.checked = LS.get('quizCta', true);
+  chk.addEventListener('change', () => { LS.set('quizCta', chk.checked); if (!chk.checked) el.classList.remove('on'); });
+  let idx = 0, last = Date.now() - (EVERY - 20) * 1000, hideAt = 0;
+  setInterval(() => {
+    const now = Date.now();
+    if (hideAt && now >= hideAt) { el.classList.remove('on'); hideAt = 0; }
+    if (!chk.checked || G.paused || hideAt) return;
+    if (!['countdown', 'question', 'reveal', 'final'].includes(G.phase)) return;
+    if (now - last < EVERY * 1000) return;
+    const m = MSGS[idx++ % MSGS.length]; last = now; hideAt = now + SHOW * 1000;
+    el.style.setProperty('--rgb', m.rgb); el.querySelector('.em').textContent = m.e; el.querySelector('.tx').textContent = m.t;
+    el.classList.add('on');
+  }, 500);
+})();
+
 (function connectBridge() {
   let ws;
   try {
