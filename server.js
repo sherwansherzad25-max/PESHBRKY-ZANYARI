@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const WebSocket = require('ws');
 
-const TIKTOK_USERNAME = 'poshaki.varin'; // بەبێ @
+const TIKTOK_USERNAME = 'peshbrkey.zanyari'; // بەبێ @
 const PORT = process.env.PORT || 8080;
 const EULER_KEY = process.env.EULER_KEY || 'euler_ZjBjZDdmNDFiN2EwZmFkYTc5M2ZjYmMzN2RmNWM1OWRmZjQ3NGQ3NDM3Y2EwZGNkNzY0MTlj';
 
