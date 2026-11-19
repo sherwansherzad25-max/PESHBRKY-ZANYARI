@@ -432,7 +432,209 @@ body.demo #demo-badge{display:block}
 .gt-toast .gc.pop{animation:gpop .35s ease}
 @keyframes gpop{0%{transform:scale(1)}40%{transform:scale(1.45)}100%{transform:scale(1)}}
 </style>
-<link rel="stylesheet" href="theme-v3.css">
+<style id="theme-v3">
+/* THEME v3 */
+
+:root{
+  --cy:#38c6ff;      /* ئاسمانی */
+  --vi:#ff4d8d;      /* گوڵی */
+  --pk:#ffb627;      /* ئەمبەر */
+  --gold:#ffc23d;
+  --ok:#2ee6a6;
+  --bad:#ff5b7a;
+  --glass:rgba(255,255,255,.06);
+  --line:rgba(255,214,150,.20);
+  --hi:inset 0 1px 0 rgba(255,236,200,.30),inset 0 -1px 0 rgba(0,0,0,.30);
+}
+
+@keyframes rays{0%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}100%{transform:rotate(-8deg)}}
+@keyframes dust{0%{transform:translateY(0) translateX(0);opacity:0}15%{opacity:.8}100%{transform:translateY(-46rem) translateX(1.4rem);opacity:0}}
+@keyframes sparkle{0%,100%{opacity:0;transform:scale(.4) rotate(0)}50%{opacity:1;transform:scale(1) rotate(90deg)}}
+@keyframes urgent{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes ringpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,182,39,.0)}50%{box-shadow:0 0 0 .5rem rgba(255,182,39,.22)}}
+@keyframes edge{0%{background-position:0 0,0% 50%}100%{background-position:0 0,300% 50%}}
+
+/* ---------- پاشخان ---------- */
+#stage{
+  background:
+    radial-gradient(110% 55% at 50% -8%,rgba(255,150,40,.30),transparent 60%),
+    radial-gradient(80% 45% at 0% 85%,rgba(56,198,255,.18),transparent 60%),
+    radial-gradient(80% 45% at 100% 95%,rgba(255,77,141,.24),transparent 60%),
+    linear-gradient(180deg,#14091f 0%,#0a0716 50%,#04030a 100%);
+  box-shadow:0 0 80px rgba(0,0,0,.85),0 0 0 1px rgba(255,200,120,.10)}
+#bg .b1{background:radial-gradient(circle,rgba(255,150,30,.55),transparent 65%)}
+#bg .b2{background:radial-gradient(circle,rgba(56,198,255,.38),transparent 65%)}
+#bg .b3{background:radial-gradient(circle,rgba(255,60,130,.45),transparent 65%)}
+#bg::before{
+  content:"";position:absolute;left:50%;top:-18%;width:170%;height:60%;margin-left:-85%;
+  background:
+    repeating-conic-gradient(from 0deg at 50% 0%,rgba(255,200,110,.10) 0deg 3deg,transparent 3deg 12deg);
+  -webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000 5%,transparent 70%);
+  mask-image:radial-gradient(ellipse at 50% 0%,#000 5%,transparent 70%);
+  transform-origin:50% 0;animation:rays 14s ease-in-out infinite;border-radius:0;opacity:1}
+#bg::after{
+  background:
+    radial-gradient(2px 2px at 14% 22%,#ffe6b0,transparent),radial-gradient(1.5px 1.5px at 84% 16%,#fff,transparent),
+    radial-gradient(1.5px 1.5px at 28% 46%,#bfe9ff,transparent),radial-gradient(2px 2px at 70% 38%,#ffd0e2,transparent),
+    radial-gradient(1.5px 1.5px at 92% 60%,#fff,transparent),radial-gradient(2px 2px at 8% 74%,#ffe6b0,transparent),
+    radial-gradient(1.5px 1.5px at 52% 88%,#fff,transparent),radial-gradient(2px 2px at 78% 94%,#bfe9ff,transparent);
+  animation:twinkle 3.6s ease-in-out infinite}
+#bg .grid{background-image:none;
+  background:radial-gradient(circle,rgba(255,220,160,.09) 1px,transparent 1.5px);background-size:1.3rem 1.3rem}
+.pt{background:#ffd98a;width:.22rem;height:.22rem;box-shadow:0 0 .5rem rgba(255,190,80,.9);animation-name:dust}
+.pt:nth-child(3n){background:#9fdcff;box-shadow:0 0 .5rem rgba(56,198,255,.9)}
+.pt:nth-child(4n){background:#ffb3d1;box-shadow:0 0 .5rem rgba(255,77,141,.9)}
+
+/* ---------- نووسینی گرادیەنت ---------- */
+.gt{background:linear-gradient(90deg,#ffe29a,#ffb627,#ff6fa5,#7fd8ff,#ffe29a);background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:gshift 7s linear infinite}
+.big-title{filter:drop-shadow(0 .2rem 1.1rem rgba(255,150,40,.6));letter-spacing:-.01em}
+.cd-title{filter:drop-shadow(0 .2rem 1.1rem rgba(255,150,40,.55))}
+.sub{color:#ffd9a8}
+
+/* ---------- چیپ و پیل ---------- */
+.chip,.tip,.livepill{box-shadow:var(--hi);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:99px}
+.chip{background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.03));border-color:var(--line)}
+.chip.gold{color:#ffd56a;background:linear-gradient(180deg,rgba(255,194,61,.26),rgba(255,194,61,.06));border-color:rgba(255,194,61,.6);text-shadow:0 0 .6rem rgba(255,194,61,.55)}
+.chip.cy{color:#8fdcff;background:linear-gradient(180deg,rgba(56,198,255,.24),rgba(56,198,255,.06));border-color:rgba(56,198,255,.55)}
+.chip.pk{color:#ffb3d1;background:linear-gradient(180deg,rgba(255,77,141,.26),rgba(255,77,141,.06));border-color:rgba(255,77,141,.55)}
+.chip.ok{color:#8bffd3;background:linear-gradient(180deg,rgba(46,230,166,.24),rgba(46,230,166,.06));border-color:rgba(46,230,166,.55)}
+.livepill{color:#ffd9a8;background:linear-gradient(180deg,rgba(255,182,39,.20),rgba(255,182,39,.04));border-color:rgba(255,182,39,.55)}
+.livepill i{color:#ff3d5a}
+.livebadge{background:linear-gradient(90deg,#ff2d55,#ff6a3d);box-shadow:0 0 .8rem rgba(255,60,80,.8)}
+.logo{border-radius:50%;background:conic-gradient(from 200deg,#ffb627,#ff4d8d,#38c6ff,#ffb627);
+  box-shadow:var(--hi),0 0 1.2rem rgba(255,150,40,.85);animation:floaty 3.5s ease-in-out infinite;position:relative}
+.logo::after{content:"";position:absolute;inset:.18rem;border-radius:50%;background:#12081f;z-index:0}
+.logo i{position:relative;z-index:1;color:#ffd56a}
+.bname{filter:drop-shadow(0 0 .5rem rgba(255,150,40,.55))}
+
+/* ---------- ئینترۆ ---------- */
+.step{border-radius:1.1rem 1.1rem 1.1rem .35rem;
+  background:linear-gradient(90deg,rgba(var(--rgb),.22),rgba(255,255,255,.035));
+  border:1px solid rgba(var(--rgb),.45);border-inline-start:.28rem solid rgb(var(--rgb));
+  box-shadow:var(--hi),0 .35rem 1rem rgba(0,0,0,.35)}
+.step.clickable{animation:ringpulse 2.4s ease-in-out infinite}
+.num{border-radius:50%;box-shadow:var(--hi),0 0 .9rem rgba(var(--rgb),.8)}
+.giftbox{border-radius:1.1rem;background:linear-gradient(135deg,rgba(255,194,61,.20),rgba(255,77,141,.10));
+  border:1px solid rgba(255,194,61,.6);box-shadow:var(--hi),0 0 1.4rem rgba(255,194,61,.22);color:#fff1cf}
+.hintbar{border-radius:99px;background:linear-gradient(90deg,rgba(255,194,61,.22),rgba(255,194,61,.05));border-color:rgba(255,194,61,.6)}
+
+/* ---------- ئەژمێرەر ---------- */
+.ring::before{background:radial-gradient(circle,rgba(255,150,40,.26),rgba(14,7,26,.7) 70%);
+  box-shadow:inset 0 0 1.6rem rgba(255,182,39,.18),0 0 2.4rem rgba(255,120,40,.40)}
+.ring .pg{stroke-width:8;filter:drop-shadow(0 0 .4rem rgba(255,182,39,.9))}
+.ring .orbit{border-color:rgba(255,182,39,.55);border-style:dotted;border-width:.14rem}
+.ring .t{background:linear-gradient(180deg,#fff,#ffd98a);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.ring .u{color:#ffd56a}
+.eq span{background:linear-gradient(#ffb627,#ff4d8d,#38c6ff);box-shadow:0 0 .4rem rgba(255,150,60,.65)}
+
+/* ---------- کیبۆرد ---------- */
+.keycard{border-radius:1.2rem;border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(255,236,200,.10),rgba(255,255,255,.03));box-shadow:var(--hi),0 .5rem 1.4rem rgba(0,0,0,.4)}
+.cap{border-radius:50%;width:2.8rem;height:2.8rem;
+  background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.75),rgb(var(--kr)) 42%,rgba(var(--kr),.7));
+  box-shadow:var(--hi),0 .24rem 0 rgba(var(--kr),.5),0 0 1.2rem rgba(var(--kr),.6)}
+.ka{--kr:255,182,39}.kb{--kr:56,198,255}.kc{--kr:255,77,141}.kd{--kr:46,230,166}
+.keycard p{color:#ffe9c7}
+.joinbox .cnt{color:#ffe0a0;text-shadow:0 0 .8rem rgba(255,182,39,.5)}
+.chips .av{border-color:#14091f;box-shadow:0 0 .5rem rgba(255,182,39,.55)}
+
+/* ---------- کارتی پرسیار ---------- */
+.qcard{
+  border-radius:1.5rem .45rem 1.5rem .45rem;border-width:.12rem;
+  background:linear-gradient(180deg,#1d0f33,#0d0719) padding-box,
+             linear-gradient(120deg,#ffb627,#ff4d8d,#38c6ff,#ffb627) border-box;
+  background-size:100% 100%,300% 100%;animation:edge 7s linear infinite;
+  box-shadow:0 .6rem 1.8rem rgba(0,0,0,.55),0 0 1.8rem rgba(255,130,40,.28),inset 0 1px 0 rgba(255,236,200,.16)}
+.qcard::before{content:"";position:absolute;top:0;left:12%;right:12%;height:.1rem;border-radius:9px;
+  background:linear-gradient(90deg,transparent,#ffe29a,transparent);box-shadow:0 0 .7rem #ffb627}
+.qtag{border-radius:99px;background:linear-gradient(90deg,#ff9a1f,#ff4d8d);
+  box-shadow:var(--hi),0 0 1rem rgba(255,120,60,.65);color:#fff}
+.tbar{border-radius:99px;background:rgba(255,255,255,.12)}
+#qbar{border-radius:99px;background:linear-gradient(90deg,var(--tc,#2ee6a6),rgba(255,255,255,.6));background-color:var(--tc,#2ee6a6)}
+.tpill{border-radius:99px;background:rgba(0,0,0,.55);color:#ffe9c7}
+.qfoot:has(#qbar[style*="#fb7185"]) .tpill{color:#ff9aae;border-color:#ff5b7a;animation:urgent .6s ease-in-out infinite}
+
+/* ---------- بژاردەکان (پیل) ---------- */
+.opt{border-radius:99px;height:2.05rem;
+  background:linear-gradient(90deg,rgba(var(--kr),.30),rgba(255,255,255,.04));
+  border:1px solid rgba(var(--kr),.70);box-shadow:var(--hi),0 .22rem .7rem rgba(0,0,0,.35),0 0 .9rem rgba(var(--kr),.14)}
+.opt .tile{border-radius:50%;width:1.55rem;height:1.55rem;
+  background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.8),rgb(var(--kr)) 45%,rgba(var(--kr),.75));
+  box-shadow:var(--hi),0 0 .9rem rgba(var(--kr),.85)}
+.opt .olabel{padding:0 .55rem}
+.opt .fill{border-radius:99px}
+.opt.correct{border-color:#2ee6a6;background:linear-gradient(90deg,rgba(46,230,166,.55),rgba(46,230,166,.12));
+  box-shadow:var(--hi),0 0 1.6rem rgba(46,230,166,.75),0 0 .4rem rgba(46,230,166,.9)}
+.opt.correct .tile{animation:pop .5s}
+.opt.wrong{opacity:.38;filter:saturate(.35) brightness(.8)}
+
+/* ---------- دۆخ ---------- */
+.status{border-radius:99px;border-color:var(--line);
+  background:linear-gradient(180deg,rgba(255,236,200,.10),rgba(255,255,255,.03));box-shadow:var(--hi),0 .3rem .9rem rgba(0,0,0,.35)}
+.status.ok{background:linear-gradient(90deg,rgba(46,230,166,.42),rgba(46,230,166,.08));border-color:rgba(46,230,166,.75);box-shadow:var(--hi),0 0 1.4rem rgba(46,230,166,.4)}
+.key{border-radius:50%}
+
+/* ---------- سەپۆرتەرەکان ---------- */
+.xc{border-radius:.8rem .8rem .8rem .25rem;border-color:rgba(var(--rgb),.6);
+  background:linear-gradient(180deg,rgba(255,236,200,.12),rgba(255,255,255,.03));box-shadow:var(--hi),0 0 .9rem rgba(var(--rgb),.22)}
+
+/* ---------- ڕیزبەندی ---------- */
+.board{border-radius:1.2rem .5rem 1.2rem 1.2rem;border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(255,236,200,.10),rgba(255,255,255,.02));box-shadow:var(--hi),0 .6rem 1.6rem rgba(0,0,0,.45)}
+.bhead .t{text-shadow:0 0 .7rem rgba(255,194,61,.6)}
+.brow{border-radius:.35rem .8rem .8rem .35rem;border:1px solid rgba(255,255,255,.08);
+  border-inline-start:.2rem solid rgba(255,182,39,.55);
+  background:linear-gradient(90deg,rgba(255,255,255,.08),rgba(255,255,255,.02))}
+.brow .rk{border-radius:50%;background:linear-gradient(135deg,rgba(255,77,141,.8),rgba(150,40,110,.7));color:#fff}
+.brow.r1{border-inline-start-color:#ffd84a;background:linear-gradient(90deg,rgba(255,200,61,.38),rgba(255,200,61,.06));
+  border-color:rgba(255,216,74,.8);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 1.1rem rgba(255,200,61,.4)}
+.brow.r2{border-inline-start-color:#dbe4f2;background:linear-gradient(90deg,rgba(215,226,242,.26),rgba(215,226,242,.05))}
+.brow.r3{border-inline-start-color:#e8873a;background:linear-gradient(90deg,rgba(232,135,58,.30),rgba(232,135,58,.05))}
+.brow.r1 .rk{background:radial-gradient(circle at 30% 25%,#fff7c8,#ffb81f);color:#3b1a00}
+.brow.r2 .rk{background:radial-gradient(circle at 30% 25%,#fff,#9fb0c8);color:#0f172a}
+.brow.r3 .rk{background:radial-gradient(circle at 30% 25%,#ffd0a0,#c2410c);color:#fff}
+.brow .sc{border-radius:99px;color:#ffe6a3;background:linear-gradient(180deg,rgba(255,194,61,.30),rgba(255,194,61,.10));border-color:rgba(255,194,61,.55);text-shadow:0 0 .5rem rgba(255,194,61,.5)}
+@keyframes flash{0%{background:rgba(255,194,61,.75);transform:scale(1.04);box-shadow:0 0 1.2rem rgba(255,194,61,.85)}100%{transform:none}}
+
+/* ---------- کۆتایی / پۆدیۆم ---------- */
+.fin-title{background:linear-gradient(180deg,#fffbe0,#ffc23d 55%,#ff8a1f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  filter:drop-shadow(0 0 1.2rem rgba(255,170,40,.85)) drop-shadow(0 .15rem .3rem rgba(0,0,0,.5))}
+.fin-title i{-webkit-text-fill-color:#ffc23d;color:#ffc23d}
+.fin-sub{color:#ffe2b8}
+.pcol.r1 .av{border-color:#ffd84a;box-shadow:0 0 2rem rgba(255,216,74,.95),0 0 0 .26rem rgba(255,216,74,.25)}
+.pcol.r1 .av::after{content:"";position:absolute;inset:-.5rem;border-radius:50%;border:.1rem dashed rgba(255,216,74,.7);animation:spin 12s linear infinite}
+.pcol.r2 .av{border-color:#dbe4f2;box-shadow:0 0 1.1rem rgba(215,226,242,.55)}
+.pcol.r3 .av{border-color:#e8873a;box-shadow:0 0 1.1rem rgba(232,135,58,.6)}
+.crown{font-size:1.35rem;filter:drop-shadow(0 0 .6rem rgba(255,216,74,1))}
+.bar{border-radius:.9rem .9rem 0 0}
+.pcol.r1 .bar{background:linear-gradient(to top,rgba(255,194,61,.55),rgba(255,194,61,.08));border-top-color:#ffd84a;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 1.5rem rgba(255,194,61,.45)}
+.pcol.r2 .bar{background:linear-gradient(to top,rgba(190,205,228,.45),rgba(190,205,228,.06));border-top-color:#dbe4f2}
+.pcol.r3 .bar{background:linear-gradient(to top,rgba(232,120,40,.48),rgba(232,120,40,.06));border-top-color:#e8873a}
+.pcol.r1 .pname{color:#ffe08a;text-shadow:0 0 .9rem rgba(255,216,74,.7)}
+
+/* ---------- مۆداڵ و دوگمە ---------- */
+.mbox{border-radius:1.6rem .5rem 1.6rem .5rem;
+  background:linear-gradient(#1d0f33,#0d0719) padding-box,linear-gradient(120deg,#ffb627,#ff4d8d,#38c6ff,#ffb627) border-box;
+  background-size:100% 100%,300% 100%;animation:edge 7s linear infinite;
+  box-shadow:0 0 2.4rem rgba(255,130,40,.40),0 1.5rem 3rem rgba(0,0,0,.65),inset 0 1px 0 rgba(255,236,200,.16)}
+.inp{border-radius:99px;border-color:rgba(255,182,39,.6);background:rgba(0,0,0,.45)}
+.inp:focus{border-color:#ffb627;box-shadow:0 0 0 .2rem rgba(255,182,39,.28),inset 0 .1rem .4rem rgba(0,0,0,.5)}
+.mbtn{border-radius:99px;color:#2a1000;
+  background:linear-gradient(90deg,#ffc23d,#ff8a3d,#ff4d8d);background-size:200% 100%;
+  box-shadow:var(--hi),0 0 1.6rem rgba(255,130,40,.65),0 .4rem 1rem rgba(0,0,0,.45)}
+#final-reset-btn{background:linear-gradient(90deg,#ffc23d,#ff8a3d,#ff4d8d)!important;color:#2a1000}
+#pause-overlay i{color:#ffc23d;filter:drop-shadow(0 0 1rem rgba(255,194,61,.9))}
+
+/* ---------- پەیامی هاندان و دیاری ---------- */
+#cta{border-radius:99px}
+.gt-toast{border-radius:99px}
+
+/* ---------- پانێلی بەڕێوەبەر (وەک خۆی، تەنها ڕەنگی ڕووکار) ---------- */
+#host{border-color:rgba(255,182,39,.35);box-shadow:0 0 2rem rgba(0,0,0,.6),0 0 1rem rgba(255,150,40,.15)}
+#host .hb.pri{background:linear-gradient(180deg,#f59e0b,#b45309);border-color:#ffc23d}
+
+</style>
 </head>
 <body>
 
