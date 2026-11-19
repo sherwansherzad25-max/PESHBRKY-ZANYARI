@@ -432,6 +432,7 @@ body.demo #demo-badge{display:block}
 .gt-toast .gc.pop{animation:gpop .35s ease}
 @keyframes gpop{0%{transform:scale(1)}40%{transform:scale(1.45)}100%{transform:scale(1)}}
 </style>
+<link rel="stylesheet" href="theme-v3.css">
 </head>
 <body>
 
@@ -939,7 +940,7 @@ const ANS = {
 };
 function parseAnswer(text) {
   const t = String(text == null ? '' : text).normalize('NFKC').toLowerCase()
-    .replace(/[​-‏‪-‮؜﻿ـً-ٟ\s.\-_,:;!?()\[\]'"«»*]+/g, '');
+    .replace(/[\u200b-\u200f\u202a-\u202e\u061c\ufeff\u0640\u064b-\u065f\s.\-_,:;!?()\[\]'"«»*]+/g, '');
   return Object.prototype.hasOwnProperty.call(ANS, t) ? ANS[t] : -1;
 }
 
