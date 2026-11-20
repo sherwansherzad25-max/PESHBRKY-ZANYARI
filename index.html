@@ -1478,8 +1478,16 @@ function refreshBoard(deltas) {
 const bsc = { mode:'wait', t:0, pos:0, from:0 };
 setInterval(() => {
   if (G.paused || G.phase !== 'question') return;
-  const box = $('bcol1').parentElement, max = box.scrollHeight - box.clientHeight, dt = 30;
-  if (max <= 2) { bsc.mode = 'wait'; bsc.t = 0; return; }
+  const box = $('bcol1').parentElement, dt = 30;
+  // تەنها تا کۆتایی ڕیزی یاریزانی ڕاستەقینە scroll دەکات (ڕیزە کزەکانی بەتاڵ ژمار ناکرێن)
+  const br = box.getBoundingClientRect();
+  let lastBottom = 0;
+  ['bcol1', 'bcol2'].forEach(id => {
+    const rows = $(id).querySelectorAll('.brow:not(.ghost)');
+    if (rows.length) lastBottom = Math.max(lastBottom, rows[rows.length - 1].getBoundingClientRect().bottom - br.top + box.scrollTop);
+  });
+  const max = Math.min(box.scrollHeight - box.clientHeight, lastBottom + 4 - box.clientHeight);
+  if (max <= 2) { bsc.mode = 'wait'; bsc.t = 0; if (box.scrollTop > 0) box.scrollTop = 0; return; }
   if (bsc.mode === 'wait') {
     bsc.t += dt;
     if (bsc.t >= 10000) { bsc.mode = 'down'; bsc.pos = box.scrollTop; }
