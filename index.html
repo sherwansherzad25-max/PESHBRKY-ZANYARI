@@ -682,6 +682,17 @@ body.demo #demo-badge{display:block}
 .tdot{display:inline-block;width:.45rem;height:.45rem;border-radius:50%;margin-inline-end:.25rem;flex-shrink:0}
 .tdot.r{background:#ff4d6e;box-shadow:0 0 .3rem #ff4d6e}.tdot.b{background:#3896ff;box-shadow:0 0 .3rem #3896ff}
 .cap.sm{font-size:1rem}
+/* شاشەی سەرەکی: ٦ یارییەکە */
+.noapp{width:100%;text-align:center;padding:.5rem .6rem;border-radius:1rem;border:1px solid rgba(52,211,153,.55);background:linear-gradient(135deg,rgba(52,211,153,.2),rgba(34,211,238,.08));box-shadow:0 0 1.1rem rgba(52,211,153,.25)}
+.noapp .na-t{font-size:.82rem;font-weight:900;color:#a7f3d0}
+.noapp .na-t i{margin-inline-end:.3rem}
+.noapp .na-s{font-size:.66rem;font-weight:700;color:#e0f2fe;margin-top:.15rem}
+.noapp b{color:#fde68a}
+.ggrid{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:.35rem}
+.gcard{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.08rem;padding:.4rem .35rem;border-radius:.9rem;border:1px solid rgba(var(--rgb),.55);background:linear-gradient(180deg,rgba(var(--rgb),.22),rgba(255,255,255,.03));box-shadow:0 0 .8rem rgba(var(--rgb),.2)}
+.gcard i{font-size:1rem;color:rgb(var(--rgb));filter:drop-shadow(0 0 .3rem rgba(var(--rgb),.7))}
+.gcard b{font-size:.74rem;font-weight:900}
+.gcard span{font-size:.58rem;color:#cbd5e1;font-weight:700}
 /* ڕاکێشانی گوریس: لیستی دوو تیم (چاوەڕێی دەستپێکردن + ڕیزبەندی) */
 .bhd{position:sticky;top:0;z-index:2;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:.3rem;padding:.2rem .5rem;border-radius:.55rem;font-size:.7rem;font-weight:900;border:1px solid rgba(var(--tc),.7);background:linear-gradient(180deg,rgba(var(--tc),.55),rgba(var(--tc),.25)),#120a2a;box-shadow:0 0 .7rem rgba(var(--tc),.35)}
 .bhd.r{--tc:255,77,110}.bhd.b{--tc:56,150,255}
@@ -700,6 +711,11 @@ body.demo #demo-badge{display:block}
 .tjp{display:flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:700;padding:.1rem .3rem;border-radius:.5rem;background:rgba(255,255,255,.07);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:pop .35s}
 .tjp .av{width:1.2rem;height:1.2rem;font-size:.55rem;flex-shrink:0}
 .tjwait{text-align:center;font-size:.72rem;font-weight:800;color:#ffd56a;margin-top:.2rem}
+.tjgo{display:none;margin:.45rem auto 0;padding:.55rem 1.4rem;border:0;border-radius:999px;cursor:pointer;font:inherit;font-size:.9rem;font-weight:900;color:#fff;background:linear-gradient(90deg,#ff4d6e,#7c3aed,#3896ff);box-shadow:0 0 1.2rem rgba(167,139,250,.7);animation:pulse 1.6s ease-in-out infinite}
+.tjgo i{margin-inline-end:.35rem}
+.tjgo:hover{filter:brightness(1.15)}
+#screen-countdown.tugwait .tjgo{display:block}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 </style>
 </head>
 <body>
@@ -709,14 +725,26 @@ body.demo #demo-badge{display:block}
 
   <!-- ================= INTRO ================= -->
   <div id="screen-intro" class="screen active">
-    <div class="cdwrap" style="justify-content:center;gap:.8rem">
+    <div class="cdwrap" style="justify-content:center;gap:.6rem">
       <div class="livepill"><i class="fa-solid fa-circle"></i> پەخشی ڕاستەوخۆ</div>
-      <h1 class="big-title gt" id="i-title">پێشبڕکێی زانیاری!</h1>
+      <h1 class="big-title gt">٦ یاری لە یەک لایڤدا!</h1>
       <p class="sub">بەشداربە و ببە بە پاڵەوانی ئەم خولە</p>
 
-      <div class="step clickable" id="step1" style="--rgb:34,211,238"><div class="num">١</div><div><h3>دەستپێکی یاری</h3><p id="i-s1">پرسیار و ٤ بژاردە لەسەر شاشەکە دەردەکەون</p></div></div>
-      <div class="step" style="--rgb:167,139,250"><div class="num">٢</div><div><h3 id="i-h2">لە کۆمێنت وەڵام بدەوە</h3><p id="i-s2">تەنها یەک پیت بنووسە ( A , B , C , D )</p></div></div>
-      <div class="step" style="--rgb:251,191,36"><div class="num">٣</div><div><h3>خاڵ کۆبکەرەوە و ببە بە پاڵەوان</h3><p id="i-s3">خێراترین وەڵام زۆرترین خاڵ دەبات</p></div></div>
+      <div class="noapp">
+        <div class="na-t"><i class="fa-solid fa-mobile-screen-button"></i> پێویست بە دابەزاندنی هیچ ئەپڵیکەیشنێک نییە!</div>
+        <div class="na-s">تەنها <b>کۆمێنت لەم لایڤەدا</b> بنووسە، وەڵامەکانت <b>ئۆتۆماتیکی</b> وەردەگیرێن ✅</div>
+      </div>
+
+      <div class="ggrid">
+        <div class="gcard" style="--rgb:34,211,238"><i class="fa-solid fa-lightbulb"></i><b>پرسیار و وەڵام</b><span>A ، B ، C یان D بنووسە</span></div>
+        <div class="gcard" style="--rgb:52,211,153"><i class="fa-solid fa-circle-check"></i><b>ڕاست یان هەڵە</b><span>1 = ڕاست · 2 = هەڵە</span></div>
+        <div class="gcard" style="--rgb:167,139,250"><i class="fa-solid fa-font"></i><b>وشەی تێکەڵاو</b><span>پیتەکان ڕێکبخە و وشەکە بنووسە</span></div>
+        <div class="gcard" style="--rgb:251,191,36"><i class="fa-solid fa-face-smile"></i><b>مەتەڵی ئیمۆجی</b><span>ئیمۆجییەکان چی دەگەیەنن؟ بینووسە</span></div>
+        <div class="gcard" style="--rgb:244,114,182"><i class="fa-solid fa-hashtag"></i><b>ژمارەکە بدۆزەرەوە</b><span>ژمارەیەک لە ١ تا ١٠٠ بنووسە</span></div>
+        <div class="gcard" style="--rgb:96,165,250"><i class="fa-solid fa-people-pulling"></i><b>ڕاکێشانی گوریس</b><span>1 = 🔴 سوور · 2 = 🔵 شین</span></div>
+      </div>
+
+      <div class="step clickable" id="step1" style="--rgb:251,191,36"><div class="num"><i class="fa-solid fa-trophy"></i></div><div><h3>خاڵ کۆبکەرەوە و ببە بە پاڵەوان</h3><p>خێراترین وەڵام زۆرترین خاڵ دەبات</p></div></div>
       <div class="giftbox"><i class="fa-solid fa-gift"></i><span id="i-gift">بە ناردنی کۆینێک یان زیاتر لە پێشبڕکێدا دەبیت بۆ ئەوەی یەکەمی سەپۆرتەکە بیت</span></div>
     </div>
   </div>
@@ -749,7 +777,7 @@ body.demo #demo-badge{display:block}
         <div class="tjcol r"><div class="tjh">🔴 تیمی سوور</div><div class="tjn" id="tj-rn">٠</div><div class="tjk">1 بنووسە</div><div class="tjl" id="tj-r"></div></div>
         <div class="tjcol b"><div class="tjh">🔵 تیمی شین</div><div class="tjn" id="tj-bn">٠</div><div class="tjk">2 بنووسە</div><div class="tjl" id="tj-b"></div></div>
       </div>
-      <div class="joinbox"><div id="join-cnt" class="cnt">هێشتا کەس بەشدار نەبووە</div><div id="join-chips" class="chips"></div><div class="tjwait" id="tj-wait" style="display:none">⏳ یاری کەمێکی تر دەست پێ دەکات… تیمەکەت هەڵبژێرە!</div></div>
+      <div class="joinbox"><div id="join-cnt" class="cnt">هێشتا کەس بەشدار نەبووە</div><div id="join-chips" class="chips"></div><div class="tjwait" id="tj-wait" style="display:none">⏳ یاری کەمێکی تر دەست پێ دەکات… تیمەکەت هەڵبژێرە!</div><button class="tjgo" id="tj-go" type="button"><i class="fa-solid fa-play"></i> دەستپێکردنی ڕاکێشان</button></div>
     </div>
   </div>
 
@@ -1522,8 +1550,8 @@ function buildList(mode, count) {
 // ---------- ڕووکار بەپێی یاری ----------
 function applyModeUI() {
   const M = MODE_INFO[G.mode];
-  $('i-title').textContent = M.title; $('i-s1').textContent = M.s1; $('i-h2').textContent = M.h2; $('i-s2').textContent = M.s2; $('i-s3').textContent = M.s3;
-  $('i-gift').textContent = M.gift || GIFT_DEFAULT; $('cd-hint').textContent = M.cdhint; $('keyp').textContent = M.keyp;
+  // شاشەی سەرەکی هەر ٦ یارییەکە پیشان دەدات، بۆیە بەپێی یاری ناگۆڕێت
+  $('i-gift').textContent = GIFT_DEFAULT; $('cd-hint').textContent = M.cdhint; $('keyp').textContent = M.keyp;
   const kc = $('keycaps'); kc.innerHTML = '';
   M.caps.forEach(([a, b, c]) => { const d = h('div', 'cap ' + c + (Array.from(a).length > 1 ? ' sm' : ''), a); if (b) d.appendChild(h('small', '', b)); kc.appendChild(d); });
   $('bname').textContent = M.brand; document.title = M.brand;
@@ -2134,6 +2162,8 @@ $('h-start').addEventListener('click', () => {
   toggleHost(false); openModal();
 });
 $('h-skip').addEventListener('click', () => { skip(); });
+// دوگمەی دەستپێکردنی ڕاکێشانی گوریس لەسەر شاشەی هەڵبژاردنی تیم
+$('tj-go').addEventListener('click', e => { e.currentTarget.blur(); if (G.mode === 'tug' && G.phase === 'countdown') skip(); });
 $('h-pause').addEventListener('click', togglePause);
 $('h-end').addEventListener('click', endNow);
 $('h-reset').addEventListener('click', resetGame);
