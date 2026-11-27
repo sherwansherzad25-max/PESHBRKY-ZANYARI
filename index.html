@@ -1164,6 +1164,17 @@ function playPhaseAudio(name) {
   } else if (name === 'countdown') {
     // پرسیار و وەڵام: countdown.mp3 · یارییەکانی تر: یاساکانی یارییەکە (tf_rules.mp3 ، word_rules.mp3 ...)
     playCustomVoice(G.mode === 'quiz' ? 'countdown.mp3' : G.mode + '_rules.mp3', false);
+    // ڕاکێشانی گوریس: یاساکان دووبارە دەبنەوە (٤ چرکە وەستان لە نێوانیاندا) تا بەڕێوەبەر یارییەکە دەست پێ دەکات
+    if (G.mode === 'tug' && customVoice) {
+      const a = customVoice;
+      a.addEventListener('ended', function again() {
+        setTimeout(() => {
+          if (customVoice !== a || G.mode !== 'tug' || G.phase !== 'countdown') return;
+          if (G.paused) { setTimeout(again, 1000); return; }
+          a.currentTime = 0; a.play().catch(() => {});
+        }, 4000);
+      });
+    }
   } else if (name === 'question') {
     if (G.mode === 'quiz') {
       // لێرەدا یەکێک لە 4 دەنگەکەی پرسیار بە هەڕەمەکی هەڵدەبژێرێت
