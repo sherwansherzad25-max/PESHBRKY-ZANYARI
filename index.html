@@ -682,6 +682,24 @@ body.demo #demo-badge{display:block}
 .tdot{display:inline-block;width:.45rem;height:.45rem;border-radius:50%;margin-inline-end:.25rem;flex-shrink:0}
 .tdot.r{background:#ff4d6e;box-shadow:0 0 .3rem #ff4d6e}.tdot.b{background:#3896ff;box-shadow:0 0 .3rem #3896ff}
 .cap.sm{font-size:1rem}
+/* ڕاکێشانی گوریس: لیستی دوو تیم (چاوەڕێی دەستپێکردن + ڕیزبەندی) */
+.bhd{position:sticky;top:0;z-index:2;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:.3rem;padding:.2rem .5rem;border-radius:.55rem;font-size:.7rem;font-weight:900;border:1px solid rgba(var(--tc),.7);background:linear-gradient(180deg,rgba(var(--tc),.55),rgba(var(--tc),.25)),#120a2a;box-shadow:0 0 .7rem rgba(var(--tc),.35)}
+.bhd.r{--tc:255,77,110}.bhd.b{--tc:56,150,255}
+.bhd small{font-size:.6rem;color:#fff;opacity:.9}
+.bcol.tr .brow{border-color:rgba(255,77,110,.35);background:linear-gradient(90deg,rgba(255,77,110,.16),rgba(255,255,255,.03))}
+.bcol.tb .brow{border-color:rgba(56,150,255,.35);background:linear-gradient(90deg,rgba(56,150,255,.16),rgba(255,255,255,.03))}
+.tjoin{display:none;width:100%;gap:.4rem;flex:1;min-height:0;max-height:22rem}
+#screen-countdown.tugwait .tjoin{display:flex}
+#screen-countdown.tugwait .ring,#screen-countdown.tugwait .eq,#screen-countdown.tugwait #join-chips{display:none}
+.tjcol{flex:1;min-width:0;display:flex;flex-direction:column;border-radius:1rem;padding:.35rem;border:1px solid rgba(var(--tc),.7);background:linear-gradient(180deg,rgba(var(--tc),.25),rgba(var(--tc),.05));box-shadow:0 0 1rem rgba(var(--tc),.3);overflow:hidden}
+.tjcol.r{--tc:255,77,110}.tjcol.b{--tc:56,150,255}
+.tjh{text-align:center;font-weight:900;font-size:.85rem}
+.tjn{text-align:center;font-size:1.6rem;font-weight:900;line-height:1.1}
+.tjk{text-align:center;font-size:.6rem;color:#e2e8f0;margin-bottom:.25rem}
+.tjl{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:.15rem}
+.tjp{display:flex;align-items:center;gap:.3rem;font-size:.62rem;font-weight:700;padding:.1rem .3rem;border-radius:.5rem;background:rgba(255,255,255,.07);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:pop .35s}
+.tjp .av{width:1.2rem;height:1.2rem;font-size:.55rem;flex-shrink:0}
+.tjwait{text-align:center;font-size:.72rem;font-weight:800;color:#ffd56a;margin-top:.2rem}
 </style>
 </head>
 <body>
@@ -727,7 +745,11 @@ body.demo #demo-badge{display:block}
         </div>
         <p id="keyp">لە بەشی کۆمێنتی تیکتۆک تەنها یەک پیت بنووسە و ناوت تۆمار دەبێت</p>
       </div>
-      <div class="joinbox"><div id="join-cnt" class="cnt">هێشتا کەس بەشدار نەبووە</div><div id="join-chips" class="chips"></div></div>
+      <div class="tjoin" id="tjoin">
+        <div class="tjcol r"><div class="tjh">🔴 تیمی سوور</div><div class="tjn" id="tj-rn">٠</div><div class="tjk">1 بنووسە</div><div class="tjl" id="tj-r"></div></div>
+        <div class="tjcol b"><div class="tjh">🔵 تیمی شین</div><div class="tjn" id="tj-bn">٠</div><div class="tjk">2 بنووسە</div><div class="tjl" id="tj-b"></div></div>
+      </div>
+      <div class="joinbox"><div id="join-cnt" class="cnt">هێشتا کەس بەشدار نەبووە</div><div id="join-chips" class="chips"></div><div class="tjwait" id="tj-wait" style="display:none">⏳ یاری کەمێکی تر دەست پێ دەکات… تیمەکەت هەڵبژێرە!</div></div>
     </div>
   </div>
 
@@ -1272,7 +1294,8 @@ function onComment(ev) {
   if (isBanned(id, name) || G.paused) return;
   if (G.phase === 'countdown') {
     const p = ensurePlayer(id, name, ev.avatar);
-    if (G.mode === 'tug' && !p.team) { const t = tugTeamOf(ev.comment); if (t) tugSetTeam(p, t); }
+    // لە کاتی هەڵبژاردنی تیمدا هەر کەسێک دەتوانێت تیمەکەی بگۆڕێت (بۆ دابەشبوونی دادپەروەرانە)
+    if (G.mode === 'tug') { const t = tugTeamOf(ev.comment); if (t) tugMoveTeam(p, t); }
     return;
   }
   if (G.phase !== 'question') return;
@@ -1350,10 +1373,10 @@ const MODE_INFO = {
     cdhint:'کیبۆردەکانتان ئامادە بکەن بۆ خێراترین وەڵام!', ringu:'چرکە بۆ پرسیاری یەکەم', cta:'وەڵام لە کۆمێنت بنووسە: A یان B یان C یان D', testph:'A / B / C / D',
     hint:{ icon:'fa-keyboard', t:'وەڵام لە کۆمێنت بنووسە', s:'تەنها یەک پیت · ناوت خۆکار تۆمار دەبێت', keys:[['A','ka'],['B','kb'],['C','kc'],['D','kd']] } },
   tf: { name:'ڕاست یان هەڵە', icon:'fa-circle-check', unit:'دەستەواژە', tag:'دەستەواژەی', plural:'دەستەواژەکان', min:10, max:30, def:15, q:15, rv:6,
-    brand:'ڕاست یان هەڵە', title:'ڕاست یان هەڵە!', s1:'دەستەواژەیەک لەسەر شاشەکە دەردەکەوێت', h2:'لە کۆمێنت وەڵام بدەوە', s2:'ڕ بنووسە بۆ ڕاست · هـ بنووسە بۆ هەڵە', s3:'خێراترین وەڵام زۆرترین خاڵ دەبات',
-    caps:[['ڕ','ڕاست','kd'],['هـ','هەڵە','kc']], keyp:'ڕ یان 1 = ڕاست · هـ یان 2 = هەڵە',
-    cdhint:'ئامادە بن: ڕاستە یان هەڵەیە؟', ringu:'چرکە بۆ دەستەواژەی یەکەم', cta:'وەڵام لە کۆمێنت بنووسە: ڕ (ڕاست) یان هـ (هەڵە)', testph:'ڕ / هـ',
-    hint:{ icon:'fa-circle-check', t:'ڕ یان هـ بنووسە', s:'ڕ = ڕاست · هـ = هەڵە', keys:[['ڕ','kd'],['هـ','kc']] } },
+    brand:'ڕاست یان هەڵە', title:'ڕاست یان هەڵە!', s1:'دەستەواژەیەک لەسەر شاشەکە دەردەکەوێت', h2:'لە کۆمێنت وەڵام بدەوە', s2:'1 بنووسە بۆ ڕاست · 2 بنووسە بۆ هەڵە', s3:'خێراترین وەڵام زۆرترین خاڵ دەبات',
+    caps:[['1','ڕاست','kd'],['2','هەڵە','kc']], keyp:'1 (١) = ڕاست · 2 (٢) = هەڵە',
+    cdhint:'ئامادە بن: ڕاستە یان هەڵەیە؟', ringu:'چرکە بۆ دەستەواژەی یەکەم', cta:'وەڵام لە کۆمێنت بنووسە: 1 (ڕاست) یان 2 (هەڵە)', testph:'1 / 2',
+    hint:{ icon:'fa-circle-check', t:'1 یان 2 بنووسە', s:'1 = ڕاست · 2 = هەڵە', keys:[['1','kd'],['2','kc']] } },
   word: { name:'وشەی تێکەڵاو', icon:'fa-font', unit:'وشە', tag:'وشەی', plural:'وشەکان', min:5, max:30, def:10, q:30, rv:6,
     brand:'وشەی تێکەڵاو', title:'وشەی تێکەڵاو!', s1:'پیتەکانی وشەیەک تێکەڵ کراون', h2:'وشە ڕاستەکە بنووسە', s2:'وشەکە بە تەواوی لە کۆمێنت بنووسە', s3:'یەکەم کەس زۆرترین خاڵ دەبات',
     caps:[['ک','','ka'],['ت','','kb'],['ێ','','kc'],['ب','','kd']], keyp:'پیتەکان ڕێک بخەرەوە و وشەکە لە کۆمێنت بنووسە',
@@ -1633,7 +1656,23 @@ function tugTeamOf(text) {
   return null;
 }
 const tugWeaker = () => G.teams.r.n < G.teams.b.n ? 'r' : G.teams.b.n < G.teams.r.n ? 'b' : (Math.random() < .5 ? 'r' : 'b');
-function tugSetTeam(p, t) { if (p.team) return; p.team = t; G.teams[t].n++; G.joinDirty = true; }
+function tugSetTeam(p, t) { if (p.team) return; p.team = t; G.teams[t].n++; p.teamAt = Date.now(); G.joinDirty = true; }
+function tugMoveTeam(p, t) {
+  if (p.team === t) return;
+  if (p.team) G.teams[p.team].n--;
+  p.team = null; tugSetTeam(p, t);
+}
+// لیستی ئەندامانی هەر تیمێک (نوێترین لە سەرەوە)
+function tugMembers(t) { const a = []; G.players.forEach(p => { if (p.team === t) a.push(p); }); return a.sort((x, y) => (y.teamAt || 0) - (x.teamAt || 0)); }
+function renderTugJoin() {
+  ['r', 'b'].forEach(t => {
+    const list = tugMembers(t), box = $('tj-' + t);
+    $('tj-' + t + 'n').textContent = kn(list.length);
+    box.innerHTML = '';
+    list.slice(0, 14).forEach(p => { const row = h('div', 'tjp'); row.append(avatarEl(p, 'av'), document.createTextNode(p.name)); box.appendChild(row); });
+    if (list.length > 14) box.appendChild(h('div', 'tjk', '+ ' + kn(list.length - 14) + ' کەسی تر'));
+  });
+}
 function tugPull(p, amt) {
   const R = G.round; if (G.phase !== 'question' || G.paused || R.winner || !p.team) return;
   G.teams[p.team].pull += amt; p.score += amt; p.gain += amt; R.pulls++;
@@ -1733,8 +1772,12 @@ function startGame() {
   G.answers = new Map(); G.counts = [0,0,0,0]; G.feed = []; G.paused = false; $('pause-overlay').classList.remove('on');
   stopConfetti(); closeModal(); audio(); lockScreen();
   renderSupporters('perm-supporters');
-  setPhase('countdown', T.countdown * 1000);
-  showScreen('screen-countdown'); $('ring-u').textContent = M.ringu; renderJoin(); updateCountdown(T.countdown * 1000);
+  // ڕاکێشانی گوریس: کاتی هەڵبژاردنی تیم سنووری نییە، بەڕێوەبەر خۆی دەستی پێ دەکات (تێپەڕاندن / Space)
+  const tugWait = G.mode === 'tug';
+  $('screen-countdown').classList.toggle('tugwait', tugWait);
+  $('tj-wait').style.display = tugWait ? '' : 'none';
+  setPhase('countdown', tugWait ? Infinity : T.countdown * 1000);
+  showScreen('screen-countdown'); $('ring-u').textContent = M.ringu; renderJoin(); updateCountdown(G.dur);
 }
 function beginQuestion() {
   G.qi++; G.answers = new Map(); G.counts = [0,0,0,0]; G.feed = []; G.statusSig = '';
@@ -1774,7 +1817,7 @@ function reveal() {
   else sub = '⚡ خێراترین: ' + G.players.get(best.id).name + ' (+' + kn(best.pts) + ') · ' + kn(okPct) + '٪ ڕاستیان دا';
   const st = $('status'); st.className = 'status ok'; st.innerHTML = '';
   const box = h('div', 'swap'), ico = h('div', 'st-ic'); ico.appendChild(ic('fa-solid fa-check'));
-  const tx = h('div', 'st-txt'); tx.append(h('div', 'st-t', 'وەڵامی ڕاست: ' + (G.mode === 'tf' ? cur.options[cur.answer] : 'ABCD'[cur.answer] + ' (' + cur.options[cur.answer] + ')')), h('div', 'st-s', sub));
+  const tx = h('div', 'st-txt'); tx.append(h('div', 'st-t', 'وەڵامی ڕاست: ' + (G.mode === 'tf' ? (cur.answer + 1) + ' (' + cur.options[cur.answer] + ')' : 'ABCD'[cur.answer] + ' (' + cur.options[cur.answer] + ')')), h('div', 'st-s', sub));
   box.append(ico, tx); st.appendChild(box);
   refreshBoard(true);
 }
@@ -1822,6 +1865,7 @@ setInterval(() => {
 }, 100);
 
 function updateCountdown(left) {
+  if (G.dur === Infinity) return;
   const sec = Math.ceil(left / 1000), pg = $('ring-pg');
   $('ring-t').textContent = kn(sec);
   pg.style.strokeDashoffset = 283 * (1 - left / G.dur);
@@ -1834,6 +1878,7 @@ function renderJoin() {
   $('join-cnt').textContent = n ? (G.mode === 'tug' ? '🔴 ' + kn(G.teams.r.n) + ' · 🔵 ' + kn(G.teams.b.n) + ' · ' : '') + kn(n) + ' کەس بەشدارن' : 'هێشتا کەس بەشدار نەبووە';
   const box = $('join-chips'); box.innerHTML = '';
   G.joinOrder.slice(-7).forEach(p => box.appendChild(avatarEl(p, 'av')));
+  if (G.mode === 'tug') renderTugJoin();
 }
 
 const opts = [];
@@ -1865,7 +1910,7 @@ function renderQuestion() {
     opts.forEach((o, i) => {
       o.el.className = 'opt k' + (G.mode === 'tf' ? 'dc'[i] || 'a' : 'abcd'[i]);
       o.el.style.display = i < n ? '' : 'none';
-      o.tile.textContent = G.mode === 'tf' ? ['ڕ', 'هـ'][i] || '' : 'ABCD'[i];
+      o.tile.textContent = G.mode === 'tf' ? ['1', '2'][i] || '' : 'ABCD'[i];
       o.txt.textContent = cur.options[i] || ''; o.fill.style.width = '0%'; o.meta.textContent = '';
     });
   }
@@ -1955,11 +2000,27 @@ function paintBoardPairs(c1, c2, items, total, start = 1, ghosts = true) {
     (i % 2 === 0 ? c1 : c2).appendChild(rowEl(start + i, it, !it));
   }
 }
+// ڕاکێشانی گوریس: لای ڕاست تیمی سوور، لای چەپ تیمی شین، هەر تیمێک ڕیزبەندی خۆی هەیە
+function paintTugBoard(items) {
+  const cols = { r:$('bcol1'), b:$('bcol2') }, by = { r:[], b:[] };
+  items.forEach(it => { if (it.p.team) by[it.p.team].push(it); });
+  const rows = Math.max(10, by.r.length, by.b.length);
+  ['r', 'b'].forEach(t => {
+    const c = cols[t], T = G.teams[t]; c.innerHTML = '';
+    const hd = h('div', 'bhd ' + t);
+    hd.append(h('span', '', t === 'r' ? '🔴 تیمی سوور' : '🔵 تیمی شین'), h('small', '', kn(T.n) + ' کەس' + (T.wins ? ' · 🏆 ' + kn(T.wins) : '')));
+    c.appendChild(hd);
+    for (let i = 0; i < rows; i++) c.appendChild(rowEl(i + 1, by[t][i], !by[t][i]));
+  });
+}
 function refreshBoard(deltas) {
   const all = standings(), nr = new Map(); all.forEach((p, i) => nr.set(p.id, i + 1));
   const items = all.slice(0, 100).map((p, i) => ({ p, delta: deltas && G.prevRank.has(p.id) ? G.prevRank.get(p.id) - (i + 1) : 0, gained: deltas && p.gain > 0 }));
   const box = $('bcol1').parentElement, keep = box.scrollTop;
-  paintBoardPairs($('bcol1'), $('bcol2'), items, Math.max(20, items.length));
+  const tug = G.mode === 'tug';
+  $('bcol1').classList.toggle('tr', tug); $('bcol2').classList.toggle('tb', tug);
+  if (tug) paintTugBoard(items);
+  else paintBoardPairs($('bcol1'), $('bcol2'), items, Math.max(20, items.length));
   box.scrollTop = keep;
   G.prevRank = nr;
 }
@@ -2062,6 +2123,8 @@ function updateHost() {
   const box = $('h-stat'); box.innerHTML = '';
   [['یاری', MODE_INFO[G.mode].name], ['دۆخ', PHASES[G.phase] + (G.paused ? ' (ڕاگیراوە)' : '')], [MODE_INFO[G.mode].unit, qn], ['بەشداربووان', kn(G.players.size)],
    ['چالاکی', G.phase === 'question' || G.phase === 'reveal' ? ansLabel() : '—']].forEach(r => box.appendChild(h('div', '', r[0] + ': ' + r[1])));
+  $('h-skip').innerHTML = G.mode === 'tug' && G.phase === 'countdown'
+    ? '<i class="fa-solid fa-play"></i> دەستپێکردنی ڕاکێشان' : '<i class="fa-solid fa-forward-step"></i> تێپەڕاندن';
   $('h-pause').innerHTML = G.paused ? '<i class="fa-solid fa-play"></i> بەردەوامبوون' : '<i class="fa-solid fa-pause"></i> ڕاگرتن';
 }
 setInterval(updateHost, 500);
@@ -2147,7 +2210,7 @@ function setDemo(on) {
         if (isChoice()) {
           if (G.answers.has(bid) || Math.random() > 0.03 + frac * 0.04) return;
           const k = cur.n || 4, idx = Math.random() < 0.55 ? cur.answer : (Math.random() * k) | 0;
-          if (G.mode === 'tf') say(Math.random() < .5 ? ['ڕ', 'هـ'][idx] : ['ڕاست', 'هەڵە'][idx]);
+          if (G.mode === 'tf') say(Math.random() < .5 ? ['1', '2'][idx] : ['١', '٢'][idx]);
           else { const L = 'ABCD'[idx]; say(Math.random() < 0.5 ? L : L.toLowerCase()); }
         } else if (isText()) {
           if (G.answers.has(bid) || Math.random() > 0.01 + frac * 0.03) return;
