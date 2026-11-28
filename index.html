@@ -612,7 +612,7 @@ body.demo #demo-badge{display:block}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+import { initializeFirestore, collection, getDocs, getDocsFromServer } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDCfOpIXgLwq2o3VF8CrZjD6g6jmC1Pfmo",
@@ -624,7 +624,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// Long-polling: لە هەندێک ئینتەرنێت و بەرنامەی لایڤدا پەیوەندیی ئاسایی Firebase دەپچڕێت، ئەمە جێگیرترە
+const db = initializeFirestore(app, { experimentalForceLongPolling: true });
 
 const BRAND = 'پێشبڕکێی زانیاری';
 const T = { countdown: 25, question: 23, reveal: 7 };
@@ -632,11 +633,12 @@ const PTS = { max: 100, min: 10, streak: 25 };
 const AUDIO_FILES = { intro: '', lobby: '', quiz: '', reveal: '' };
 
 let QUESTIONS = [];
+let QERR = ''; // هۆکاری سەرنەکەوتنی هێنانی پرسیارەکان (بۆ پیشاندان لە پەنجەرەی دەستپێکردن)
+const QCACHE = 'quizQCache';
 
 async function loadQuestionsFromFirebase() {
   const startBtn = document.getElementById('m-start');
-  const noteBox = document.getElementById('modal-note');
-  
+
   // داخستنی دوگمەکە لە کاتی هێنانی زانیارییەکان
   if(startBtn) {
     startBtn.disabled = true;
@@ -644,50 +646,70 @@ async function loadQuestionsFromFirebase() {
     startBtn.style.opacity = '0.5';
     startBtn.style.cursor = 'not-allowed';
   }
-  
+
   try {
-    const qSnap = await getDocs(collection(db, "questions"));
+    // ئەگەر یەکەم هەوڵ سەرنەکەوت، جارێکی تر هەوڵ دەدرێتەوە
+    let qSnap;
+    // FromServer: ئەگەر پەیوەندی نەبوو هەڵە دەدات (نەک لیستێکی بەتاڵ). ئەگەر یەکەم هەوڵ سەرنەکەوت، جارێکی تر هەوڵ دەدرێتەوە
+    try { qSnap = await getDocsFromServer(collection(db, "questions")); }
+    catch (e1) { console.warn('retrying questions', e1); await new Promise(r => setTimeout(r, 2000)); qSnap = await getDocsFromServer(collection(db, "questions")); }
     const ansMap = { "A": 0, "B": 1, "C": 2, "D": 3 };
+    const list = [];
     qSnap.forEach(doc => {
       let d = doc.data();
       if(d.question && d.optionA) {
-        QUESTIONS.push({
+        list.push({
           q: d.question,
           options: [d.optionA, d.optionB, d.optionC, d.optionD],
-          answer: ansMap[d.correct] !== undefined ? ansMap[d.correct] : 0,
+          answer: ansMap[String(d.correct || '').trim().toUpperCase()] ?? 0,
           cat: d.category || 'گشتی'
         });
       }
     });
-    updateNote();
-    
-    // کردنەوەی دوگمەکە دوای گەیشتنی پرسیارەکان
-    if(startBtn && QUESTIONS.length > 0) {
-      startBtn.disabled = false;
-      startBtn.textContent = 'دەستپێکردن';
-      startBtn.style.opacity = '1';
-      startBtn.style.cursor = 'pointer';
-    } else if (startBtn) {
-      startBtn.textContent = 'هیچ پرسیارێک نەدۆزرایەوە';
+    if (list.length) {
+      QUESTIONS = list; QERR = '';
+      try { localStorage.setItem(QCACHE, JSON.stringify(list)); } catch (e) {} // کۆپییەک لە ئامێرەکەدا هەڵدەگیرێت بۆ ئەوەی ئەگەر Firebase کار نەکات، پرسیارەکان هەر هەبن
+    } else {
+      useCachedQuestions('هیچ پرسیارێک لە Firebase نەدۆزرایەوە');
     }
-
   } catch(e) {
     console.error('Error fetching questions', e);
-    if(noteBox) noteBox.textContent = 'کێشە هەیە لە هێنانی پرسیارەکان، هێڵی ئینتەرنێتەکەت بپشکنە';
-    if(startBtn) startBtn.textContent = 'کێشەی هێڵ';
+    const code = (e && (e.code || e.name)) || 'unknown';
+    const why = code === 'resource-exhausted' ? 'سنووری ڕۆژانەی Firebase تەواو بووە'
+      : code === 'permission-denied' ? 'یاساکانی Firebase (Rules) ڕێگەی خوێندن نادەن'
+      : code === 'unavailable' ? 'ناتوانرێت پەیوەندی بە Firebase بکرێت (ئینتەرنێت یان بلۆک)'
+      : 'کێشە لە هێنانی پرسیارەکان';
+    useCachedQuestions(why + ' [' + code + ']');
+  }
+  updateNote();
+}
+// ئەگەر Firebase سەرنەکەوت، دوایین کۆپیی هەڵگیراو لە ئامێرەکە بەکاردێت
+function useCachedQuestions(reason) {
+  let cached = [];
+  try { cached = JSON.parse(localStorage.getItem(QCACHE) || '[]'); } catch (e) {}
+  if (Array.isArray(cached) && cached.length) {
+    QUESTIONS = cached;
+    QERR = reason + ' — ' + String(cached.length).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]) + ' پرسیاری هەڵگیراو بەکاردێت';
+  } else {
+    QERR = reason;
   }
 }
 // دوای پرسیارەکان، داتای یارییەکانی تر (ئەگەر لە Firebase هەبن) دادەبەزێت؛ دوگمەکە هەمیشە دەکرێتەوە
 // چونکە یارییەکانی تر پێویستیان بە پرسیاری Firebase نییە
-// ئەگەر Firebase درەنگ وەڵام بداتەوە، دوای ٨ چرکە دوگمەکە دەکرێتەوە (یارییەکانی تر داتای ئامادەیان هەیە)
+// ئەگەر Firebase درەنگ وەڵام بداتەوە، دوای ١٥ چرکە دوگمەکە دەکرێتەوە (یارییەکانی تر داتای ئامادەیان هەیە)
+let fbDone = false;
 function enableStart() {
   const b = document.getElementById('m-start');
   if (b) { b.disabled = false; b.textContent = 'دەستپێکردن'; b.style.opacity = '1'; b.style.cursor = 'pointer'; }
+  if (!fbDone && !QUESTIONS.length && !QERR) {
+    // Firebase هێشتا وەڵامی نەداوەتەوە: کۆپیی هەڵگیراو بەکاربهێنە تا وەڵام دێتەوە
+    useCachedQuestions('Firebase درەنگ وەڵام دەداتەوە');
+  }
   updateNote();
 }
 const firebaseLoad = Promise.allSettled([loadQuestionsFromFirebase(), loadExtraData()]);
-firebaseLoad.then(enableStart);
-setTimeout(enableStart, 8000);
+firebaseLoad.then(() => { fbDone = true; enableStart(); });
+setTimeout(enableStart, 15000);
 
 const $ = id => document.getElementById(id);
 const h = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
@@ -1857,8 +1879,10 @@ function stopConfetti() { cancelAnimationFrame(cRaf); parts = []; const cv = $('
 
 function updateNote() {
   const M = MODE_INFO[G.mode], n = modeAvail(G.mode), want = parseInt($('inp-count').value, 10) || M.def;
+  if (G.mode === 'quiz' && !n && !QERR) { $('modal-note').textContent = '⏳ پرسیارەکان لە Firebase دادەبەزن…'; return; }
   if (n === Infinity) { $('modal-note').textContent = G.mode === 'tug' ? 'هەر گەڕێک ' + kn(M.q) + ' چرکەیە' : 'ژمارەکان لە ١ تا ١٠٠'; return; }
   $('modal-note').textContent = kn(n) + ' ' + M.unit + ' بەردەستە' + (want > n ? ' — تەنها ' + kn(n) + ' بەکاردێت' : '');
+  if (G.mode === 'quiz' && QERR) $('modal-note').textContent += ' · ⚠️ ' + QERR;
 }
 function openModal() { if (G.phase !== 'intro') return; renderModeGrid(); syncCountInput(); updateNote(); $('settings-modal').classList.add('active'); setTimeout(() => { try { $('inp-count').select(); } catch (e) {} }, 50); }
 function closeModal() { $('settings-modal').classList.remove('active'); }
